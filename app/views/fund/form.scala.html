@@ -1,0 +1,12 @@
+@(form : Form[Fund])
+@import navigation.nav
+
+@nav(){
+    @helper.form(routes.FundController.postCreate()){
+        <input type="number" style="display : none" name="id">
+        <input type="text" name="name" placeholder="name">
+        <input type="text" name="url" placeholder="url">
+        <button type="submit">Submit</button>
+
+    }
+}
