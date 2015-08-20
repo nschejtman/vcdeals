@@ -1,7 +1,58 @@
 @()
 @import navigation.nav
+@css = {
+    <link href="@routes.Assets.at("stylesheets/index.css")" type="text/css" rel="stylesheet">
 
-@nav(){
+}
+@js = {
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="@routes.Assets.at("javascripts/index.js")"></script>
+
+}
+@nav(css, js) {
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="panel panel-default" id="funds-panel">
+                    <div class="panel-heading">
+                        Funds <img src="@routes.Assets.at("images/loader.gif")" class="hidden pull-right" id="funds-loader" height="20px"></div>
+                    <div class="panel-body">
+                        <table class="table" id="funds-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Url</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary" onclick="updateFunds()">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <!--<div id="funds-donut-chart"></div>-->
+                <div class="panel panel-default" id="statistics-panel">
+                    <div class="panel-heading">
+                        Statistics
+                    </div>
+                    <div class="panel-body">
+                    </div>
+                    <div class="panel-footer">
+
+                    </div>
+                </div>
+
+            </div>
+                <!-- end .row-->
+        </div>
+
+            <!--end .container-->
+    </div>
 
 }
 

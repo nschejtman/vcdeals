@@ -1,12 +1,6 @@
-@(funds : List[Fund])
+@()
 @import navigation.nav
 
 @nav(){
-    <ul>
-    @for(fund : Fund <- funds){
-        <li>
-            <a href="@fund.url" target="_blank">@fund.name</a>
-        </li>
-    }
-    </ul>
+
 }

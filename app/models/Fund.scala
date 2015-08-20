@@ -2,8 +2,8 @@ package models
 
 import play.api.libs.json.Json
 
-case class Fund(id : Long, name : String, url : String)
-
+case class Fund(id : Long, name : String, url : String, verified : Boolean)
 object Fund {
-  implicit val catFormat = Json.format[Fund]
+  implicit val fundFormat = Json.format[Fund]
+
 }

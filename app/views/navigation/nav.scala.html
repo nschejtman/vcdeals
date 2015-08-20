@@ -1,15 +1,49 @@
-@()(body : Html)
+@(css: Html = Html(""), js: Html = Html(""))(body: Html)
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>VC Deals</title>
 
-<!-- nav bars, side bars, etc, etc -->
-@body
-<!-- footers etc -->
+            <!--Bootstrap-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/nav.css")">
 
-</body>
+            <!--User CSS-->
+        @css
+        </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="@routes.Application.index">VC Deals</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="@routes.Application.index">Home</a></li>
+                        <li><a href="@routes.FundController.demoDeals">Demo deals</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <div class="container">
+        @body
+        </div>
+
+            <!--jQuery + Bootstrap-->
+        <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+            <!--User JS-->
+        @js
+
+    </body>
 </html>
