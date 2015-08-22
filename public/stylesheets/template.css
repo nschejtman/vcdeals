@@ -1,0 +1,76 @@
+@font-face {
+    font-family: 'Core Sans A';
+    src: url('../fonts/CoreSansA55.woff2');
+}
+
+.navbar {
+    background: white;
+    color: #A6A6A6;
+    border-bottom: solid 1px #EBEBEB;
+    font-family: 'Core Sans A', sans-serif;
+    font-size: 1.30em;
+}
+
+.navbar > .container {
+    margin-left: 19px;
+    width: 100%;
+}
+
+.navbar-right{
+    margin-right: 5px;
+    border-left: solid 1px #EBEBEB;
+    padding-left: 19px;
+}
+
+.navbar .navbar-nav.navbar-right a{
+    margin-right: 18px;
+    color: #90CA0A;
+}
+
+.navbar .navbar-nav.navbar-right a:hover{
+    color: #80ba0a;
+}
+
+.navbar .navbar-brand, .navbar .navbar-nav > li > a {
+    text-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 15px;
+}
+
+.navbar .navbar-brand {
+    color: #90CA0A;
+    font-size: 1.35em;
+    margin-right: 18px;
+}
+
+.navbar a{
+    -webkit-transition: color 100ms ease-out,border 100ms ease-out;
+    transition: color 100ms ease-out,border 100ms ease-out;
+}
+
+.navbar-nav a:hover{
+    color: #808080 !important;
+}
+
+.navbar-brand:hover{
+    color: #80ba0a !important;
+}
+
+.modal-content  {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    border: none;
+    width: 300px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40%;
+    /*padding-top: -106.5px;*/
+}
+
+#login-modal .modal-title{
+    color: #90CA0A;
+}
