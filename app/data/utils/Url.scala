@@ -3,19 +3,34 @@ package data.utils
 //noinspection SpellCheckingInspection
 case class Url(host: String, path: String, queryString: Map[String, String]) {
   //wwww
-  def thirdLevelDomain = host.substring(0, host.indexOf("."))
+  def thirdLevelDomain : Option[String] = {
+    containsSubdomain match {
+      case true => Option[String](host.substring(0, host.indexOf(".")))
+      case false => Option.empty[String]
+    }
+  }
 
   //mydomainname
   def secondLevelDomain = {
-    val start: Int = host.indexOf(".")
-    host.substring(start, host.indexOf(".", start + 1))
+    val idx: Int = host.indexOf(".")
+    containsSubdomain match {
+      case true => host.substring(idx, host.indexOf(".", idx + 1))
+      case false => host.substring(0, idx)
+    }
   }
 
   //com
   def topLevelDomain = {
-    val start: Int = host.indexOf(".", host.indexOf(".") + 1)
-    host.substring(start)
+    val idx: Int = host.indexOf(".")
+    containsSubdomain match {
+      case true => host.substring(idx, host.indexOf(".", idx + 1))
+      case false => host.substring(idx)
+    }
   }
+
+  def sameDomain(url : Url) = host == url.host
+
+  private def containsSubdomain = host.indexOf(".", host.indexOf(".") + 1) > -1
 }
 
 object Url {
