@@ -39,5 +39,24 @@ class UrlTest {
     Assert.assertTrue(Url("www.google.com").thirdLevelDomain.get == Url("www.amazon.com").thirdLevelDomain.get)
   }
 
+  @Test
+  def testTopLevelDomain()={
+    Assert.assertTrue(Url("https://www.google.com.ar/?gws_rd=ssl").topLevelDomain == ".com.ar")
+  }
+
+  @Test
+  def testTopLevelDomain2()={
+    Assert.assertTrue(Url("google.com.ar/?gws_rd=ssl").topLevelDomain == ".com.ar")
+  }
+
+  @Test
+  def testSecondLevelDomain()={
+    Assert.assertTrue(Url("https://www.google.com.ar/?gws_rd=ssl").secondLevelDomain == "google")
+  }
+
+  @Test
+  def testThirdLevelDomain()={
+    Assert.assertTrue(Url("https://www.google.com.ar/?gws_rd=ssl").thirdLevelDomain.get == "www")
+  }
 
 }
