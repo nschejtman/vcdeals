@@ -3,7 +3,8 @@ package controllers
 import javax.inject.Inject
 
 import dal.FundDAO
-import data.scrapper.{ScrapperOne, LAVCAScrapper}
+import data.scrapper.deal.ScrapperOne
+import data.scrapper.fund.LAVCAScrapper
 import models.Fund
 import play.api.data.Form
 import play.api.data.Forms._
