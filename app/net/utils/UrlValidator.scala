@@ -1,4 +1,4 @@
-package data.utils
+package net.utils
 
 object UrlValidator {
   def isValid(url : String) = true

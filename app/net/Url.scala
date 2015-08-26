@@ -1,7 +1,9 @@
-package data.utils
+package net
+
+import net.utils.UrlValidator
 
 //noinspection SpellCheckingInspection
-case class Url(host: String, path: String, queryString: Map[String, String]) {
+case class Url(host: String, path: String, query: Map[String, String]) {
   //wwww
   def thirdLevelDomain : Option[String] = {
     containsSubdomain match {
@@ -29,6 +31,17 @@ case class Url(host: String, path: String, queryString: Map[String, String]) {
   }
 
   def sameDomain(url : Url) = host == url.host
+
+  override def toString = {
+    var aux = host ++ path
+    if (query.nonEmpty){
+      aux += "?"
+      query.foreach(t =>
+        aux += t._1 + "=" + t._2 + "&"
+      )
+    }
+    aux.substring(0, aux.length - 1)
+  }
 
   private def containsSubdomain = {
     val fIdx: Int = host.indexOf(".")
@@ -97,8 +110,4 @@ object Url {
 
 }
 
-object TopLevelDomains{
-  //TODO : extract list from https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains
-  val domains : List[String] = ".com" :: ".gov" :: ".org" :: ".net" :: ".edu" :: Nil
-  def contains(domain : String) = domains.contains(domain)
-}
+
