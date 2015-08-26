@@ -1,4 +1,4 @@
-import data.utils.Url
+import net.Url
 import org.junit.{Assert, Test}
 
 class UrlTest {
