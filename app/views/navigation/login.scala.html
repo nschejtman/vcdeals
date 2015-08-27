@@ -1,0 +1,17 @@
+@(login: Form[(String,String)])
+@import navigation.nav
+@import helper._
+
+@nav() {
+    @helper.form(routes.Auth.authenticate()) {
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <input type="number" style="display : none" name="id" value="-1">
+        <input type="text" name="email" placeholder="email">
+        <input type="text" name="password" placeholder="password">
+        <button type="submit">
+            Login
+        </button>
+
+    }
+
+}
