@@ -26,6 +26,7 @@ object SocialFilter extends LinkFilter {
       case "instagram" => false
       case "yahoo" => false
       case "soundcloud" => false
+      case "wordpress" => false
       case _ => true
     }
   }
