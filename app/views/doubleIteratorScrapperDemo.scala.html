@@ -1,0 +1,63 @@
+@()
+@import navigation.nav
+@css = {
+    <style>
+    .btn {
+    margin-top : 5px;
+    }
+    #results {
+    background-color : rgb(234,234,234);
+    border-radius : 10px;
+    padding-top : 10px;
+    padding-bottom : 10px;
+    }
+    #results li{
+        padding: 0;
+    }
+    </style>
+}
+@js = {
+    <script>
+        var $loader = $("#loader");
+        var $input = $("#url-input");
+        var $results = $("#results");
+        function tryScrapper(){
+            $loader.toggleClass("hidden");
+            $.ajax({
+                url: "/doubleit/getDeals",
+                method: "POST",
+                data: {url : $input.val()},
+                timeout: 900000
+            }).done(function(data) {
+                $loader.toggleClass("hidden");
+                renderResults(data);
+            });
+        }
+
+        function renderResults(data){
+            $results.empty();
+            data.forEach(function(deal){
+                var clone = $("<li></li>");
+                clone.html("<b>" + deal.name + "</b>  " + deal.url);
+                $results.append(clone);
+            });
+        }
+    </script>
+}
+@nav(css, js) {
+    <div class="row">
+        <div class="col-md-4">
+            <form>
+                <h3>Try scrapper!</h3>
+                <input type="text" placeholder="example" class="form-control" id="url-input">
+                <img src="@routes.Assets.at("images/loader.gif")" class="hidden pull-right" id="loader" height="20px">
+            </form>
+            <button type="button" class="btn btn-primary pull-right" onclick="tryScrapper()">Try!</button>
+        </div>
+        <div class="col-md-8">
+            <ul id="results">
+                <li class="hidden"></li>
+            </ul>
+        </div>
+    </div>
+}

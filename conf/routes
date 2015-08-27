@@ -3,18 +3,20 @@
 # ~~~~
 
 # Home page
-GET         /                      controllers.Application.index()
+GET         /                         controllers.Application.index()
 
 # Funds
 #GET         /fund/view/:id          controllers.FundController.view(id : Long)
-GET         /fund/new              controllers.FundController.getCreate()
-POST        /fund/new              controllers.FundController.postCreate()
+GET         /fund/new                 controllers.FundController.getCreate()
+POST        /fund/new                 controllers.FundController.postCreate()
 #GET         /fund/update/:id        controllers.FundController.getUpdate(id : Long)
 #POST        /fund/update/:id        controllers.FundController.postUpdate(id : Long)
-GET         /api/fund/list         controllers.FundController.list()
-GET         /api/fund/stats        controllers.FundController.verificationStats()
-GET         /deal/demo             controllers.FundController.demoDeals()
+GET         /api/fund/list            controllers.FundController.list()
+GET         /api/fund/stats           controllers.FundController.verificationStats()
+GET         /deal/demo                controllers.FundController.demoDeals()
+GET         /doubleit/demo            controllers.Application.demoDoubleIt()
+POST        /doubleit/getDeals        controllers.Application.getDeals()
 
 # Map static resources from the /public folder to the /assets URL path
 #GET         /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
-GET         /assets/*file          controllers.Assets.at(path="/public", file : String)
+GET         /assets/*file             controllers.Assets.at(path="/public", file : String)
