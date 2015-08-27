@@ -5,6 +5,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Element, Document}
 
 object JSoupUrlExtractor {
+  //TODO make async
   def extractUrls(url: Url): Seq[Url] = {
     try {
       val document: Document = Jsoup.connect(Protocols.HTTP.buildLinkString(url)).get()
