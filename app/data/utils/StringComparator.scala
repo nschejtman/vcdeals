@@ -7,12 +7,11 @@ object StringComparator {
   /**
    * Compares two strings and returns the similarity percentage. It's calculated as a percentage from the total length
    * of string b. In other words it's the percentage of how much a fits in b.
-   * Research more at:
-   * http://stackoverflow.com/questions/15303631/what-are-some-algorithms-for-comparing-how-similar-two-strings-are#
    * @param a first string
    * @param b second string
    * @return similarity percentage
    */
+  //TODO Research more at: http://stackoverflow.com/questions/15303631/what-are-some-algorithms-for-comparing-how-similar-two-strings-are#
   def compare(a : String, b: String): Double ={
     val aComp = generateComparable(a)
     val bComp = generateComparable(b)
