@@ -1,6 +1,7 @@
 package data.scrapper.deal
 
 import data.scrapper.Scrapper
+import data.scrapper.filter.SocialFilter
 import data.utils.NameValidator
 import models.Deal
 import net.utils.{JSoupUrlExtractor, UrlValidator}
@@ -17,7 +18,7 @@ object DoubleIterationDealScrapper extends Scrapper[Deal] {
     var links = JSoupUrlExtractor.extractUrls(baseUrl)
     val selfLinks: Seq[Url] = links.filter(l => l.sameDomain(baseUrl))
     selfLinks.foreach(l => links = links ++ JSoupUrlExtractor.extractUrls(l))
-    val externalLinks: Seq[Url] = links.filter(l => !l.sameDomain(baseUrl))
+    val externalLinks: Seq[Url] = links.filter(l => !l.sameDomain(baseUrl)).filter(SocialFilter.filter)
     val deals: Seq[Deal] = externalLinks.map(e => Deal(e.secondLevelDomain, e.host)).distinct
     deals
   }
