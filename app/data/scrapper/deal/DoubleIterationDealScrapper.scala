@@ -19,7 +19,7 @@ object DoubleIterationDealScrapper extends Scrapper[Deal] {
     val selfLinks: Seq[Url] = links.filter(l => l.sameDomain(baseUrl))
     selfLinks.foreach(l => links = links ++ JSoupUrlExtractor.extractUrls(l))
     val externalLinks: Seq[Url] = links.filter(l => !l.sameDomain(baseUrl)).filter(SocialFilter.filter).filter(FundAsocFilter.filter)
-    val deals: Seq[Deal] = externalLinks.map(e => Deal(e.secondLevelDomain, e.host)).distinct
+    val deals: Seq[Deal] = externalLinks.map(e => Deal(0, e.secondLevelDomain, e.host, verified = false)).distinct
     deals
   }
 
