@@ -1,6 +1,5 @@
 package net
 
-import net.Protocols.Protocols
 import net.utils.UrlValidator
 
 //noinspection SpellCheckingInspection
@@ -16,9 +15,6 @@ case class Url(host: String, path: String, query: Map[String, String]) {
   //mydomainname
   def secondLevelDomain = {
     val idx: Int = host.indexOf(".")
-    if (idx < 0){
-      print()
-    }
     containsSubdomain match {
       case true => host.substring(idx + 1, host.indexOf(".", idx + 1))
       case false => host.substring(0, idx)
@@ -64,7 +60,6 @@ object Url {
       val validUrl: String = UrlValidator.validate(url)
       val idxOfPath: Int = validUrl.indexOf("/")
       val idxOfQuery: Int = validUrl.indexOf("?")
-      if(idxOfPath == -1) print(url)
       val host = validUrl.substring(0, idxOfPath)
 
       val path = validUrl.substring(idxOfPath, idxOfQuery match {
