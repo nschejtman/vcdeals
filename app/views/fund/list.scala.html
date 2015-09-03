@@ -1,6 +1,110 @@
-@()
+@(fundForm: Form[Fund])
 @import navigation.nav
+@js = {
+    <script>
+        $(document).ready(updateFunds);
 
-@nav(){
+        function updateFunds(){
+            $.get("/api/fund/list").done(renderFunds);
+        }
 
+        function renderFunds(funds){
+          var template = $('#template').html();
+          Mustache.parse(template);   // optional, speeds up future uses
+          var rendered = Mustache.render(template, {funds: funds});
+          $("#fund-table").find("tbody").html(rendered);
+        }
+    </script>
+}
+
+@nav(js = js) {
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Fund list</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="fund-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Url</th>
+                                <th>Verified</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <script id="template" type="x-tmpl-mustache">
+                    {{#funds}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{url}}</td>
+                            <td>{{verified}}</td>
+                        </tr>
+                    {{/funds}}
+                </script>
+
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Search
+                </div>
+                <div class="panel-body">
+                    <form class="form-inline">
+                        <input type="text" class="form-control" placeholder="Search...">
+                        <button class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Create manually</h3>
+                </div>
+                <div class="panel-body">
+                    @helper.form(routes.FundController.post()) {
+                            <!--suppress HtmlFormInputWithoutLabel -->
+                        <input type="number" style="display : none" name="id" value="-1" class="form-control">
+                        <div class="form-group">
+                            <label for="name">Fund name</label>
+                            <input type="text" name="name" placeholder="Name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="url">Fund URL</label>
+                            <input type="text" name="url" placeholder="URL" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" name="verified">
+                            <label for="verified">Verified</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right">
+                            Create fund
+                        </button>
+                    }
+                    <ul id="funds"></ul>
+                    <script type="text/coffeescript" rel="script">
+                    $ ->
+                    $.get "/fund/list", ( funds ) ->
+                    $.each funds, ( index, fund ) ->
+                    name = $ ( "<div>" ).addClass ( "name" ).text fund.name
+                    url = $ ( "<div>" ).addClass ( "url" ).text fund.url
+                    $ ( "#funds" ).append $ ( "<li>" ).append ( name ).append ( url )
+                    </script>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Actions hub
+                </div>
+                <div class="panel-body">
+                    <button class="btn btn-primary">Update LAVCA</button>
+                    <button class="btn btn-primary">Update EMPEA</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }

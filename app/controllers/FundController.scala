@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
+import com.google.inject.Singleton
 import dal.FundDAO
 import data.scrapper.deal.ScrapperOne
 import data.scrapper.fund.LAVCAScrapper
@@ -13,7 +14,7 @@ import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
+@Singleton
 class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) extends Controller {
 
   val fundForm = Form(
@@ -25,9 +26,26 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
     )(Fund.apply)(Fund.unapply)
   )
 
-  def list = Action.async {
+  def getList = Action.async {
     fundDao.list().map(funds =>
       Ok(Json.toJson(funds))
+    )
+  }
+
+  def getFundNew = Action {
+    Ok(views.html.fund.form.render(fundForm))
+  }
+
+  def post = Action.async { implicit request =>
+    fundForm.bindFromRequest().fold(
+      errorForm => {
+        Future.successful(Redirect(routes.Application.index))
+      },
+      fund => {
+        fundDao.create(fund.name, fund.url).map { _ =>
+          Redirect(routes.FundController.getFundList)
+        }
+      }
     )
   }
 
@@ -52,36 +70,9 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
 //    Json.parse(jsonStr)
   }
 
-  def getList = Action {
-    Ok(views.html.fund.list())
-  }
 
-  def getCreate = Action {
-    Ok(views.html.fund.form(fundForm))
-  }
-
-  def postCreate = Action.async { implicit request =>
-    fundForm.bindFromRequest().fold(
-      errorForm => {
-        Future.successful(Redirect(routes.Application.index))
-      },
-      fund => {
-        fundDao.create(fund.name, fund.url).map { _ =>
-          Redirect(routes.FundController.list)
-        }
-      }
-    )
-  }
-
-  def demoDeals() = Action {
-    ScrapperOne.run1()
-    ScrapperOne.run2()
-    Redirect(routes.Application.index)
-  }
-
-  def updateFunds(): Unit = {
-    val LAVCAScrapper: LAVCAScrapper = new LAVCAScrapper(fundDao)
-    LAVCAScrapper.run()
+  def getFundList = Action {
+    Ok(views.html.fund.list(fundForm))
   }
 
 }

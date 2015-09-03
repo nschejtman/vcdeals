@@ -1,25 +1,7 @@
-@(fund: Form[Fund])
+@(fundForm: Form[Fund])
 @import navigation.nav
 @import helper._
 
 @nav() {
-    @helper.form(routes.FundController.postCreate()) {
-        <!--suppress HtmlFormInputWithoutLabel -->
-        <input type="number" style="display : none" name="id" value="-1">
-        <input type="text" name="name" placeholder="name">
-        <input type="text" name="url" placeholder="url">
-        <button type="submit">
-            Create fund
-        </button>
 
-    }
-    <ul id="funds"></ul>
-    <script type="text/coffeescript" rel="script">
-        $ ->
-            $.get "/fund/list", (funds) ->
-            $.each funds, (index, fund) ->
-            name = $("<div>").addClass("name").text fund.name
-            url = $("<div>").addClass("url").text fund.url
-            $("#funds").append $("<li>").append(name).append(url)
-    </script>
 }
