@@ -4,8 +4,6 @@ import javax.inject.Inject
 
 import com.google.inject.Singleton
 import dal.FundDAO
-import data.scrapper.deal.ScrapperOne
-import data.scrapper.fund.LAVCAScrapper
 import models.Fund
 import play.api.data.Form
 import play.api.data.Forms._
@@ -22,7 +20,7 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
       "id" -> longNumber(),
       "name" -> text(),
       "url" -> text(),
-      "boolean" -> boolean
+      "verified" -> boolean
     )(Fund.apply)(Fund.unapply)
   )
 
@@ -40,7 +38,7 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
         Future.successful(Redirect(routes.Application.index))
       },
       fund => {
-        fundDao.create(fund.name, fund.url).map { _ =>
+        fundDao.create(fund.name, fund.url, fund.verified).map { _ =>
           Redirect(routes.FundController.getFundHub)
         }
       }
