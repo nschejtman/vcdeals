@@ -4,8 +4,7 @@
 
 # Home page
 GET         /                     controllers.Application.index()
-GET         /fund/list            controllers.FundController.getFundList()
-GET         /fund/new             controllers.FundController.getFundNew()
+GET         /fund/hub             controllers.FundController.getFundHub()
 
 
 # Funds API

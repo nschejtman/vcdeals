@@ -26,14 +26,12 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
     )(Fund.apply)(Fund.unapply)
   )
 
+  //API actions
+
   def getList = Action.async {
     fundDao.list().map(funds =>
       Ok(Json.toJson(funds))
     )
-  }
-
-  def getFundNew = Action {
-    Ok(views.html.fund.form.render(fundForm))
   }
 
   def post = Action.async { implicit request =>
@@ -43,36 +41,16 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
       },
       fund => {
         fundDao.create(fund.name, fund.url).map { _ =>
-          Redirect(routes.FundController.getFundList)
+          Redirect(routes.FundController.getFundHub)
         }
       }
     )
   }
 
-  def verificationStats = Action.async {
-    fundDao.list().map(funds =>
-      Ok(getVerifiedStatsJson(funds))
-    )
-  }
+  //Render actions
 
-  private def getVerifiedStatsJson(funds: Seq[Fund]) = {
-    var verified = 0
-    var unverified = 0
-    funds.foreach(fund =>
-      fund.verified match {
-        case true => verified += 1
-        case false => unverified += 1
-      }
-    )
-
-//    val jsonStr =
-      "{[{label : \"verified\", value : %1$s}, {label : \"verified\", value : %2$s}]}" format(verified, unverified)
-//    Json.parse(jsonStr)
-  }
-
-
-  def getFundList = Action {
-    Ok(views.html.fund.list(fundForm))
+  def getFundHub = Action {
+    Ok(views.html.fund.hub(fundForm))
   }
 
 }
