@@ -8,50 +8,26 @@
     <script src="@routes.Assets.at("javascripts/index.js")"></script>
 }
 @nav(css, js) {
-    <div class="container">
-
-        <div class="row">
-            <div class="col-md-6 col-sm-12">
-                <div class="panel panel-default" id="funds-panel">
-                    <div class="panel-heading">
-                        Funds <img src="@routes.Assets.at("images/loader.gif")" class="hidden pull-right" id="funds-loader" height="20px"></div>
-                    <div class="panel-body">
-                        <table class="table" id="funds-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Url</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="panel-footer">
-                        <button class="btn btn-primary" onclick="updateFunds()">Update</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <!--<div id="funds-donut-chart"></div>-->
-                <div class="panel panel-default" id="statistics-panel">
-                    <div class="panel-heading">
-                        Statistics
-                    </div>
-                    <div class="panel-body">
-                    </div>
-                    <div class="panel-footer">
-
-                    </div>
-                </div>
-
-            </div>
-                <!-- end .row-->
-        </div>
-
-            <!--end .container-->
+    <div class="jumbotron">
+        <h1>Scrapper, crawler, database</h1>
+        <p>VC Deals™ is a web crawling/scrapping tool whose purpose is to gather and store information about V.C. funds
+            that have participated in the financing of emerging companies in selected countries of Latin America.</p>
     </div>
-
+    <h4>Release 0.0.2 (09/03/2015)</h4>
+    <ul>
+        <li>Log in</li>
+        <li>Get deals from fund webpage <span class="label label-default">Major feature</span></li>
+        <li>User validation</li>
+        <li>User manual input for deals and funds</li>
+        <li>Front end v.1</li>
+    </ul>
+    <h4>Release 0.0.1 (08/06/2015)</h4>
+    <ul>
+        <li>Launch manual information updates</li>
+        <li>Generate requests</li>
+        <li>Identify funds from LAVCA and EMPEA <span class="label label-default">Major feature</span></li>
+        <li>Fund DB integration</li>
+    </ul>
 }
 
 
