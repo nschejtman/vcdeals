@@ -9,11 +9,29 @@
         }
 
         function renderFunds(funds){
-          var template = $('#template').html();
-          Mustache.parse(template);   // optional, speeds up future uses
-          var rendered = Mustache.render(template, {funds: funds});
-          $("#fund-table").find("tbody").html(rendered);
+            var template = $('#template').html();
+            Mustache.parse(template);   // optional, speeds up future uses
+            var rendered = Mustache.render(template, {funds: funds});
+            $("#fund-table").find("tbody").html(rendered);
         }
+
+        function search(){
+            console.log("success");
+            var rows = $("#fund-table").find("tbody tr");
+            rows.hide();
+            var searchText = $("#search").val().toLowerCase();
+            rows.each(function(){
+                var $this = $(this);
+                var name = $this.find("td:first").text().toLowerCase();
+                var url = $this.find("td:nth-child(2)").text().toLowerCase();
+                if(name.indexOf(searchText) != -1 || url.indexOf(searchText) != -1){
+                   $this.show();
+                }
+            });
+        }
+
+        $("#search").keyup(search);
+
     </script>
 }
 
@@ -55,10 +73,10 @@
                     Search
                 </div>
                 <div class="panel-body">
-                    <form class="form-inline">
-                        <input type="text" class="form-control" placeholder="Search...">
-                        <button class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                    </form>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" placeholder="Search..." id="search">
+                        <button class="btn btn-primary" onclick="search()" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default">
