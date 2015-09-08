@@ -1,5 +1,9 @@
 @(fundForm: Form[Fund])
 @import navigation.nav
+@css={
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/fund_hub.css")">
+}
+
 @js = {
     <script>
         $(document).ready(updateFunds);
@@ -16,7 +20,6 @@
         }
 
         function search(){
-            console.log("success");
             var rows = $("#fund-table").find("tbody tr");
             rows.hide();
             var searchText = $("#search").val().toLowerCase();
@@ -30,12 +33,20 @@
             });
         }
 
+        function updateLavca(){
+            $.get("/api/fund/lavca").done(renderFunds);
+        }
+
+        function updateEmpea(){
+            $.get("/api/fund/empea").done(renderFunds);
+        }
+
         $("#search").keyup(search);
 
     </script>
 }
 
-@nav(js = js) {
+@nav(css, js) {
     <div class="row">
         <div class="col-md-8 col-sm-12">
             <div class="panel panel-default">
@@ -119,8 +130,8 @@
                     Actions hub
                 </div>
                 <div class="panel-body">
-                    <button class="btn btn-primary">Update LAVCA</button>
-                    <button class="btn btn-primary">Update EMPEA</button>
+                    <button class="btn btn-primary" onclick="updateLavca()">Update LAVCA</button>
+                    <button class="btn btn-primary" onclick="updateEmpea()">Update EMPEA</button>
                 </div>
             </div>
         </div>

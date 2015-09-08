@@ -4,6 +4,7 @@ import javax.inject.Inject
 
 import com.google.inject.Singleton
 import dal.FundDAO
+import data.scrapper.fund.{EMPEAScrapper, LAVCAScrapper}
 import models.Fund
 import play.api.data.Form
 import play.api.data.Forms._
@@ -42,6 +43,24 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
           Redirect(routes.FundController.getFundHub)
         }
       }
+    )
+  }
+
+  //noinspection SpellCheckingInspection
+  def updateLavca() = Action.async {
+    val scrapper: LAVCAScrapper = new LAVCAScrapper(fundDao)
+    scrapper.run()
+    fundDao.list().map(funds =>
+      Ok(Json.toJson(funds))
+    )
+  }
+
+  //noinspection SpellCheckingInspection
+  def updateEmpea() = Action.async {
+    val scrapper: EMPEAScrapper = new EMPEAScrapper(fundDao)
+    scrapper.run()
+    fundDao.list().map(funds =>
+      Ok(Json.toJson(funds))
     )
   }
 

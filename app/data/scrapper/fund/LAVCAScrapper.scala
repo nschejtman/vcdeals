@@ -11,6 +11,7 @@ import scala.concurrent.ExecutionContext
 
 class LAVCAScrapper @Inject()(fundDAO: FundDAO)(implicit ec: ExecutionContext) {
 
+  //TODO refactor scrapper style
   def run() =  {
     val lavcaDoc: Document = Jsoup.connect("http://lavca.org/membership/current-members-lavca/").get()
     val auxArray: Array[Element] = Array.empty
