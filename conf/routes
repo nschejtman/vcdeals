@@ -5,6 +5,7 @@
 # Home page
 GET         /                      controllers.Application.index()
 GET         /fund/hub              controllers.FundController.getFundHub()
+GET         /deal/hub              controllers.DealController.getDealHub()
 
 
 # Funds API
@@ -15,6 +16,10 @@ POST        /api/fund              controllers.FundController.post()
 GET         /api/fund/list         controllers.FundController.getList()
 GET         /api/fund/lavca        controllers.FundController.updateLavca()
 GET         /api/fund/empea        controllers.FundController.updateEmpea()
+
+#Deals API
+POST        /api/deal              controllers.DealController.post()
+GET         /api/deal/list         controllers.DealController.getList()
 
 
 # Map static resources from the /public folder to the /assets URL path
