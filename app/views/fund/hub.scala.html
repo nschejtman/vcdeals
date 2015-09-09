@@ -115,15 +115,6 @@
                             Create fund
                         </button>
                     }
-                    <ul id="funds"></ul>
-                    <script type="text/coffeescript" rel="script">
-                    $ ->
-                    $.get "/fund/list", ( funds ) ->
-                    $.each funds, ( index, fund ) ->
-                    name = $ ( "<div>" ).addClass ( "name" ).text fund.name
-                    url = $ ( "<div>" ).addClass ( "url" ).text fund.url
-                    $ ( "#funds" ).append $ ( "<li>" ).append ( name ).append ( url )
-                    </script>
                 </div>
             </div>
             <div class="panel panel-default">
