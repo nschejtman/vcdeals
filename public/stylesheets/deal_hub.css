@@ -1,0 +1,23 @@
+td{
+    max-width: 100px;
+    overflow: hidden;
+}
+
+p.info{
+    color: #888;
+}
+
+img.loader{
+    display: block;
+    margin: 100px auto;
+    width: 30px;
+    height: 30px;
+}
+
+#deal-extraction-table input{
+    border: none;
+}
+
+#deal-extraction-table input:focus{
+    border-bottom: 1px solid;
+}
