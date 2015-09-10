@@ -1,0 +1,13 @@
+New log file opened at Thu Aug 27 15:54:23 ART 2015 by 8056@Toto-PC
+Taking next connection to: 58056
+New client attempting to connect on port: 58057-58056
+  Address = /192.168.100.109:58056
+This client on port 58057 has uuid 64adfb42-574f-4fa8-a803-09bc1a55b682 configName play-fork-run humanReadableName Play Fork Run protocolVersion 1 featureTags Vector()
+Connected Clients: play-fork-run-64adfb42-574f-4fa8-a803-09bc1a55b682
+Taking next connection to: 58056
+Checking to see if clients are empty...
+No non-daemon clients connected after 3 min. Shutting down.
+Server socket thread exiting.
+0 clients open, will close them...
+All client sockets have been closed.
+Closing the 8056@Toto-PC logs at Thu Aug 27 15:57:24 ART 2015, goodbye.

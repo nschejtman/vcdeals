@@ -1,19 +1,14 @@
 package controllers
 
-
-import data.scrapper.deal.DoubleIterationDealScrapper
-import models.Deal
-import net.utils.UrlValidator
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.Json
-import play.api.mvc.{Security, Action, Controller}
+import play.api.mvc.{Action, Controller, Security}
 import views.html
 
 /**
- * Created by Tomás on 27/08/2015.
+ * Created by Tomas on 27/08/2015.
  */
-object Auth extends Controller {
+class Auth extends Controller {
 
   val loginForm = Form(
     tuple(
@@ -40,7 +35,7 @@ object Auth extends Controller {
   }
 
   def logout = Action {
-    Redirect(routes.Auth.login).withNewSession.flashing(
+    Redirect("").withNewSession.flashing(
       "success" -> "You are now logged out."
     )
   }

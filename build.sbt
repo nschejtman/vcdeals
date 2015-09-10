@@ -19,6 +19,9 @@ libraryDependencies ++= Seq(
   "org.jsoup" % "jsoup" % "1.8.2"
 )
 
+
 routesGenerator := InjectedRoutesGenerator
+
+fork in run := true
 
 fork in run := true
