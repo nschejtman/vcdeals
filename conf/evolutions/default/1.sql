@@ -14,8 +14,16 @@ create table "DEAL" (
   "VERIFIED" BOOLEAN not null
 );
 
+create table "FUND_DEAL_RELATION" (
+  "FUND_ID" bigint not null,
+  "DEAL_ID" bigint not null,
+  "VERIFIED" BOOLEAN not null
+);
+
 # --- !Downs
 
 drop table "FUND" if exists;
 
 drop table "DEAL" if exists;
+
+drop table "FUND_DEAL_RELATION" if exists;
