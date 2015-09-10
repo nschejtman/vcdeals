@@ -2,7 +2,7 @@ package models
 
 import play.api.libs.json.Json
 
-case class Deal(name : String, url: String) {
+case class Deal(id : Long, name : String, url: String, verified : Boolean) {
 
 
 }

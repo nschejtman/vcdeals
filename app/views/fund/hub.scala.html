@@ -1,0 +1,131 @@
+@(fundForm: Form[Fund])
+@import navigation.nav
+@css={
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/fund_hub.css")">
+}
+
+@js = {
+    <script>
+        $(document).ready(updateFunds);
+
+        function updateFunds(){
+            $.get("/api/fund/list").done(renderFunds);
+        }
+
+        function renderFunds(funds){
+            var template = $('#template').html();
+            Mustache.parse(template);   // optional, speeds up future uses
+            var rendered = Mustache.render(template, {funds: funds});
+            $("#fund-table").find("tbody").html(rendered);
+        }
+
+        function search(){
+            var rows = $("#fund-table").find("tbody tr");
+            rows.hide();
+            var searchText = $("#search").val().toLowerCase();
+            rows.each(function(){
+                var $this = $(this);
+                var name = $this.find("td:first").text().toLowerCase();
+                var url = $this.find("td:nth-child(2)").text().toLowerCase();
+                if(name.indexOf(searchText) != -1 || url.indexOf(searchText) != -1){
+                   $this.show();
+                }
+            });
+        }
+
+        function updateLavca(){
+            $.get("/api/fund/lavca").done(renderFunds);
+        }
+
+        function updateEmpea(){
+            $.get("/api/fund/empea").done(renderFunds);
+        }
+
+        $("#search").keyup(search);
+
+    </script>
+}
+
+@nav(css, js) {
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Fund list</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="fund-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Url</th>
+                                <th>Verified</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <script id="template" type="x-tmpl-mustache">
+                    {{#funds}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{url}}</td>
+                            <td>{{verified}}</td>
+                        </tr>
+                    {{/funds}}
+                </script>
+
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <input type="text" class="form-control" placeholder="Search..." id="search">
+                        <button class="btn btn-primary" onclick="search()" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Create manually</h3>
+                </div>
+                <div class="panel-body">
+                    @helper.form(routes.FundController.post()) {
+                            <!--suppress HtmlFormInputWithoutLabel -->
+                        <input type="number" style="display : none" name="id" value="-1" class="form-control">
+                        <div class="form-group">
+                            <label for="name">Fund name</label>
+                            <input type="text" name="name" placeholder="Name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="url">Fund URL</label>
+                            <input type="text" name="url" placeholder="URL" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <!--suppress HtmlFormInputWithoutLabel -->
+                            <input type="checkbox" name="verified" value="true">
+                            <label for="verified">Verified</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right">
+                            Create fund
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Actions hub</h3>
+                </div>
+                <div class="panel-body">
+                    <button class="btn btn-primary" onclick="updateLavca()">Update LAVCA</button>
+                    <button class="btn btn-primary" onclick="updateEmpea()">Update EMPEA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
