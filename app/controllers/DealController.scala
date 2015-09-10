@@ -53,11 +53,11 @@ class DealController @Inject()(dealDao: DealDAO)(implicit ec: ExecutionContext) 
   def post = Action.async { implicit request =>
     dealForm.bindFromRequest().fold(
       errorForm => {
-        Future.successful(Redirect(routes.Application.index))
+        Future.successful(Redirect(routes.Application.index()))
       },
       deal => {
         dealDao.create(deal.name, deal.url, deal.verified).map { _ =>
-          Redirect(routes.DealController.getDealHub)
+          Redirect(routes.DealController.getDealHub())
         }
       }
     )
@@ -76,7 +76,7 @@ class DealController @Inject()(dealDao: DealDAO)(implicit ec: ExecutionContext) 
   def postList = Action { implicit request =>
     dealsForm.bindFromRequest().fold(
       errorForm => {
-        Redirect(routes.Application.index)
+        Redirect(routes.Application.index())
       },
       data => {
         data.deals.foreach(deal => dealDao.create(deal.name, deal.url, deal.verified))

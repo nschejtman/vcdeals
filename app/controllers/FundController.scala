@@ -36,11 +36,11 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
   def post = Action.async { implicit request =>
     fundForm.bindFromRequest().fold(
       errorForm => {
-        Future.successful(Redirect(routes.Application.index))
+        Future.successful(Redirect(routes.Application.index()))
       },
       fund => {
         fundDao.create(fund.name, fund.url, fund.verified).map { _ =>
-          Redirect(routes.FundController.getFundHub)
+          Redirect(routes.FundController.getFundHub())
         }
       }
     )
