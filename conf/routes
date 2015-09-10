@@ -2,6 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+
 # Home page
 GET         /                            controllers.Application.index()
 GET         /fund/hub                    controllers.FundController.getFundHub()
@@ -26,4 +27,7 @@ POST        /api/deal/extract/url        controllers.DealController.postExtractU
 #Authentication
 GET         /api/login                   controllers.Auth.login()
 POST        /api/auth                    controllers.Auth.authenticate()
+
+#Assets
+GET         /assets/*file                controllers.Assets.at(path="/public", file : String)
 
