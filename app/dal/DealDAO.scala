@@ -47,4 +47,8 @@ class DealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
     deals.result
   }
 
+  def find(id: Long) : Future[Deal] = db.run {
+    deals.filter(_.id === id).result.head
+  }
+
 }
