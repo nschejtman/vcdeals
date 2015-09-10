@@ -5,6 +5,7 @@ target
 /.classpath
 /.project
 /.settings
+/.sbtserver
 /RUNNING_PID
 db
 *.db
