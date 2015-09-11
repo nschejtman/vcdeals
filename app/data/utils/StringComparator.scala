@@ -1,45 +1,46 @@
 package data.utils
 
 import java.util.Locale
+import java.text.Normalizer
 
 object StringComparator {
 
   /**
-   * Compares two strings and returns the similarity percentage. It's calculated as a percentage from the total length
-   * of string b. In other words it's the percentage of how much a fits in b.
+   * Compares two strings and returns the similarity percentage
    * @param a first string
    * @param b second string
    * @return similarity percentage
    */
-  //TODO Research more at: http://stackoverflow.com/questions/15303631/what-are-some-algorithms-for-comparing-how-similar-two-strings-are#
-  def compare(a : String, b: String): Double ={
-    val aComp = generateComparable(a)
-    val bComp = generateComparable(b)
-    val aLength: Int = aComp.length
-    val bLength: Int = bComp.length
-    if (aLength == 0 || bLength == 0) return 0
-    var bi : Int = b.indexOf(a.charAt(0))
-    if (bi == -1) return 0
-    var ai=0
-    var acc = 0
-    while(ai < aLength && bi < bLength){
-      if (aComp.charAt(ai) == bComp.charAt(bi)){
-        acc+=1
-        ai+=1
-        bi+=1
-      } else
-        while (bComp.charAt(bi) != aComp.charAt(ai)) bi+=1
-    }
-    acc / bLength * 100
-  }
+  def compare(a: String, b: String): Int = levenshteinDistance(generateComparable(a), generateComparable(b))
 
   /**
    * Generates a standard string without spaces, special characters or numbers, only lower case letters.
    * @param a regular string
    * @return standard string
    */
-  private def generateComparable(a :String): String = {
-    a.replaceAll("[^a-zA-Z]", "").toLowerCase(Locale.US)
+  private def generateComparable(a: String): String = {
+    Normalizer.normalize(a, Normalizer.Form.NFD).replaceAll("[^a-zA-Z]", "").toLowerCase(Locale.US)
   }
+
+  //noinspection SpellCheckingInspection
+  private def levenshteinDistance(a: String, b: String) = {
+    val aLength: Int = a.length
+    val bLength: Int = b.length
+    val distance: Array[Array[Int]] = Array.ofDim[Int](aLength + 1, bLength + 1)
+    for (i <- 0 to aLength) distance(i)(0) = i
+    for (j <- 0 to bLength) distance(0)(j) = j
+    def min(a: Int, b: Int, c: Int) = Math.min(Math.min(a, b), c)
+    for (i <- 1 to aLength)
+      for (j <- 1 to bLength) {
+        val d0: Int = distance(i - 1)(j) + 1
+        val d1: Int = distance(i)(j - 1) + 1
+        val d2: Int = distance(i - 1)(j - 1) + {
+          if (a.charAt(i - 1) == b.charAt(j - 1)) 0; else 1
+        }
+        distance(i)(j) = min(d0, d1, d2)
+      }
+    distance(aLength)(bLength)
+  }
+
 
 }
