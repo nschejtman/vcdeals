@@ -6,10 +6,12 @@ import java.text.Normalizer
 object StringComparator {
 
   /**
-   * Compares two strings and returns the similarity percentage
+   * Compares two strings and returns the Levenshtein distance between them. This is a coefficient indicating the
+   * minimum number of single-character edits (i.e. insertions, deletions or substitutions) required to change one
+   * string into the other.
    * @param a first string
    * @param b second string
-   * @return similarity percentage
+   * @return Levenshtein distance
    */
   def compare(a: String, b: String): Int = levenshteinDistance(generateComparable(a), generateComparable(b))
 
@@ -22,7 +24,28 @@ object StringComparator {
     Normalizer.normalize(a, Normalizer.Form.NFD).replaceAll("[^a-zA-Z]", "").toLowerCase(Locale.US)
   }
 
-  //noinspection SpellCheckingInspection
+  /**
+   * Returns the percentage of difference between two strings. This is calculated as the Levenshtein distance over the
+   * max length of a or b.
+   * @param a any string
+   * @param b any other string
+   * @return difference percentage
+   */
+  def difference(a: String, b: String): Double = {
+    val aComp: String = generateComparable(a)
+    val bComp: String = generateComparable(b)
+    levenshteinDistance(aComp, bComp) / Math.min(aComp.length, bComp.length) * 100
+  }
+
+  /**
+   * Returns the percentage of similarity between two strings. This is calculated as the 100 minus the Levenshtein
+   * distance over the max length of a or b.
+   * @param a any string
+   * @param b any string
+   * @return similarity percentage
+   */
+  def similarity(a: String, b: String): Double = 100 - difference(a, b)
+
   private def levenshteinDistance(a: String, b: String) = {
     val aLength: Int = a.length
     val bLength: Int = b.length

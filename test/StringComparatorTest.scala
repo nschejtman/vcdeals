@@ -4,7 +4,6 @@ import org.junit.{Assert, Test}
 class StringComparatorTest {
 
   @Test
-  //noinspection SpellCheckingInspection
   def testLevenshteinDistance() = {
     Assert.assertTrue(StringComparator.compare("cat", "bat") == 1)
     Assert.assertTrue(StringComparator.compare("kitten", "sitting") == 3)
@@ -16,6 +15,16 @@ class StringComparatorTest {
     Assert.assertTrue(StringComparator.compare("áéíóú", "âêîôû") == 0)
     Assert.assertTrue(StringComparator.compare("áéíóú", "äëïöü") == 0)
   }
+
+  def testDifference() = {
+    Assert.assertTrue(StringComparator.difference("cat", "cat") == 0)
+  }
+
+  def testSimilarity() = {
+    Assert.assertTrue(StringComparator.similarity("cat", "cat") == 100)
+  }
+
+
 
 
 }
