@@ -3,9 +3,9 @@ package controllers
 import javax.inject.Inject
 
 import com.google.inject.Singleton
-import dal.DealDAO
+import dal.{FundDAO, DealDAO}
 import data.scrapper.deal.DoubleIterationDealScrapper
-import models.Deal
+import models.{Fund, Deal}
 import net.utils.UrlValidator
 import play.api.data.Form
 import play.api.data.Forms._
@@ -15,7 +15,7 @@ import play.api.mvc.{Action, Controller}
 import scala.concurrent.{Future, ExecutionContext}
 
 @Singleton
-class DealController @Inject()(dealDao: DealDAO)(implicit ec: ExecutionContext) extends Controller {
+class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO)(implicit ec: ExecutionContext) extends Controller {
   val dealForm = Form(
     mapping(
       "id" -> longNumber(),
@@ -61,6 +61,15 @@ class DealController @Inject()(dealDao: DealDAO)(implicit ec: ExecutionContext) 
         }
       }
     )
+  }
+
+  def updateAllFunds()=Action {
+
+
+    val deals: Seq[Deal] = List()
+    fundDao.list().foreach(f =>  f.foreach(fund => try{DoubleIterationDealScrapper.getContent(fund.url).foreach(d => dealDao.create(d.name,d.url))}))
+
+    Ok(views.html.deal.hub.render())
   }
 
   def postExtractUrl = Action { implicit request =>

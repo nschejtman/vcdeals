@@ -18,11 +18,13 @@ GET         /api/fund/list               controllers.FundController.getList()
 GET         /api/fund/lavca              controllers.FundController.updateLavca()
 GET         /api/fund/empea              controllers.FundController.updateEmpea()
 
+
 #Deals API
 POST        /api/deal                    controllers.DealController.post()
 GET         /api/deal/list               controllers.DealController.getList()
 POST        /api/deal/list               controllers.DealController.postList()
 POST        /api/deal/extract/url        controllers.DealController.postExtractUrl()
+GET        /api/deal/updateFunds        controllers.DealController.updateAllFunds()
 
 #Authentication
 GET         /api/login                   controllers.Auth.login()
