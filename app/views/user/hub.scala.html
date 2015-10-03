@@ -1,0 +1,107 @@
+@()
+@import navigation.nav
+@css = {
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/deal_hub.css")">
+}
+
+@js = {
+    <script>
+        $(document).ready(updateUsers);
+
+        function updateUsers(){
+            $.get("/api/user/list").done(renderUsers);
+        }
+
+        function renderUsers(user){
+            var template = $('#template').html();
+            Mustache.parse(template);   // optional, speeds up future uses
+            var rendered = Mustache.render(template, {users: users});
+            $("#user-table").find("tbody").html(rendered);
+        }
+
+
+        var $modal = $("#url-extraction-modal");
+        var $modalLoader = $modal.find(".loader");
+        var $modalTable = $("#user-extraction-table");
+
+
+        $("#search").keyup(search);
+
+    </script>
+}
+
+@nav(css, js) {
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Users list</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="deal-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <script id="template" type="x-tmpl-mustache">
+                    {{#users}}
+                        <tr>
+                            <td>{{name}}</td>
+                        </tr>
+                    {{/users}}
+                </script>
+
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <input type="text" class="form-control" placeholder="Search..." id="search">
+                        <button class="btn btn-primary" onclick="search()" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Add new user</h3>
+                </div>
+                <div class="panel-body">
+                @helper.form(routes.UserController.post()) {
+                        <!--suppress HtmlFormInputWithoutLabel -->
+                    <input type="number" style="display : none" name="id" value="-1" class="form-control">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" placeholder="Username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Initial Password</label>
+                        <input type="text" name="password" placeholder="Initial Password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary pull-right">
+                        Create User
+                    </button>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="editable-template" type="x-tmpl-mustache">
+        {{#users}}
+            <tr>
+                <td class="hidden"><input type="number" name="user[{{i}}].id" value="{{user.id}}"></td>
+                <td><input type="text" name="user[{{i}}].username" value="{{user.username}}"></td>
+                <td><input type="text" name="user[{{i}}].password" value="{{user.passwordl}}"></td>
+            </tr>
+        {{/deals}}
+    </script>
+}

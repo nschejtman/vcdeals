@@ -7,6 +7,7 @@
 GET         /                            controllers.Application.index()
 GET         /fund/hub                    controllers.FundController.getFundHub()
 GET         /deal/hub                    controllers.DealController.getDealHub()
+GET         /user/hub                    controllers.UserController.getUserHub()
 
 
 # Funds API
@@ -27,6 +28,14 @@ POST        /api/deal/extract/url        controllers.DealController.postExtractU
 #Authentication
 GET         /api/login                   controllers.Auth.login()
 POST        /api/auth                    controllers.Auth.authenticate()
+
+
+#Users
+POST        /api/user                   controllers.UserController.post()
+#GET         /api/user/:id         read
+#PUT         /api/user/:id         update
+#DELETE      /api/user/:id         delete
+GET         /api/user/list               controllers.UserController.getList()
 
 #Assets
 GET         /assets/*file                controllers.Assets.at(path="/public", file : String)

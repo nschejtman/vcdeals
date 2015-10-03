@@ -1,11 +1,13 @@
 package application
 
-import application.UserRoles.UserRoles
+import play.api.libs.json.Json
 
-case class User(username : String, password : String, roles : List[UserRoles]) {
+case class User(id: Long, username : String, password : String/*, roles : List[UserRoles]*/) {
   def authenticate : Boolean = username.equals("admin") && password.equals("password")
 }
 
 object User{
+
+    implicit val userFormat = Json.format[User]
 
 }

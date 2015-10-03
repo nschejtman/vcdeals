@@ -1,8 +1,9 @@
 
-@(login: Form[(String,String)])
+@import application.UserRoles.UserRoles
+@(login: Form[(String,String,UserRoles)])
+
 @import navigation.nav
 @import helper._
-
 @nav() {
     @helper.form(routes.Auth.authenticate()) {
         <!--suppress HtmlFormInputWithoutLabel -->
@@ -25,8 +26,7 @@
                                         <input class="form-control" type="text" name="email" placeholder="email">
                                     </div><div class="form-group">
                                     <input class="form-control" type="text" name="password" placeholder="password">
-                                    </div>
-
+                                </div>
                                     @*<input class="btn btn-lg btn-success btn-block" type="submit" value="Login">*@
                                 </fieldset>
                                 <button  class="btn btn-lg btn-success btn-block" type="submit">
