@@ -14,11 +14,13 @@ case class Url(host: String, path: String, query: Map[String, String]) {
 
   //mydomainname
   def secondLevelDomain = {
-    val idx: Int = host.indexOf(".")
-    containsSubdomain match {
-      case true => host.substring(idx + 1, host.indexOf(".", idx + 1))
-      case false => host.substring(0, idx)
-    }
+    try {
+      val idx: Int = host.indexOf(".")
+      containsSubdomain match {
+        case true => host.substring(idx + 1, host.indexOf(".", idx + 1))
+        case false => host.substring(0, idx)
+      }
+    } catch {case _ : Exception => ""}
   }
 
   //com
@@ -30,7 +32,7 @@ case class Url(host: String, path: String, query: Map[String, String]) {
     }
   }
 
-  def sameDomain(url : Url) = secondLevelDomain == url.secondLevelDomain && topLevelDomain == url.topLevelDomain
+  def sameDomain(url : Url) = try{secondLevelDomain == url.secondLevelDomain && topLevelDomain == url.topLevelDomain} catch {case _ : Exception => false}
 
   override def toString = {
     var aux = host ++ path

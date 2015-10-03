@@ -12,15 +12,17 @@ object JSoupUrlExtractor {
       val document: Document = Jsoup.connect(Protocols.HTTP.buildLinkString(url)).get()
       val elements = document.select("a[href]").toArray(Array.empty[Element])
       def buildUrl(url: String, baseUrl: Url) = {
+        try {
         url.charAt(0) match {
           case '/' => Url(baseUrl.host + url)
           case _ => Url(url)
         }
+        }catch { case _ : Exception => Url("")}
       }
       elements.map(_.attr("href")).filter(UrlValidator.isValid).map(e => buildUrl(e, url))
     }
     catch {
-      case e: org.jsoup.HttpStatusException => Seq.empty
+      case _: Exception => Seq.empty
     }
   }
 
