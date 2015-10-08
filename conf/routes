@@ -8,7 +8,10 @@ GET         /                            controllers.Application.index()
 GET         /fund/hub                    controllers.FundController.getFundHub()
 GET         /deal/hub                    controllers.DealController.getDealHub()
 GET         /user/hub                    controllers.UserController.getUserHub()
+GET         /statistic/hub               controllers.StatisticController.getStatisticHub()
 
+# Statistic API
+GET         /api/statistic/list          controllers.StatisticController.getList()
 
 # Funds API
 POST        /api/fund                    controllers.FundController.post()
@@ -25,15 +28,16 @@ POST        /api/deal                    controllers.DealController.post()
 GET         /api/deal/list               controllers.DealController.getList()
 POST        /api/deal/list               controllers.DealController.postList()
 POST        /api/deal/extract/url        controllers.DealController.postExtractUrl()
-GET        /api/deal/updateFunds        controllers.DealController.updateAllFunds()
+GET         /api/deal/updateFunds        controllers.DealController.updateAllFunds()
 
 #Authentication
 GET         /api/login                   controllers.Auth.login()
+GET         /api/logout                  controllers.Auth.logout()
 POST        /api/auth                    controllers.Auth.authenticate()
 
 
 #Users
-POST        /api/user                   controllers.UserController.post()
+POST        /api/user                    controllers.UserController.post()
 #GET         /api/user/:id         read
 #PUT         /api/user/:id         update
 #DELETE      /api/user/:id         delete

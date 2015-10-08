@@ -1,9 +1,9 @@
-@(css: Html = Html(""), js: Html = Html(""))(body: Html)
+@(css: Html = Html(""), js: Html = Html(""))(body: Html)(implicit session: play.api.mvc.Session)
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>VC Deals - </title>
+        <title>VC Deals  </title>
 
             <!--Bootstrap-->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -23,19 +23,20 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="@routes.Application.index">VC Deals</a>
+                    <a class="navbar-brand" href="@routes.Application.index">VC Deals - @session.get("username")</a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><a href="@routes.Application.index">Home</a></li>
                         <li><a href="@routes.FundController.getFundHub">Funds</a></li>
                         <li><a href="@routes.DealController.getDealHub">Deals</a></li>
-                        <li><a href="#">Statistics</a></li>
+                        <li><a href="@routes.StatisticController.getStatisticHub">Statistics</a></li>
                         <li><a href="@routes.UserController.getUserHub">Users</a></li>
                         <li><a href="#">Search</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="@routes.Auth.login">Login</a></li>
+                        <li><a href="@routes.Auth.logout">Logout</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>

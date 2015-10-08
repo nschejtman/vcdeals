@@ -1,4 +1,4 @@
-@(fundForm: Form[Fund])
+@(fundForm: Form[Fund])(implicit session: play.api.mvc.Session)
 @import navigation.nav
 @css={
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/fund_hub.css")">

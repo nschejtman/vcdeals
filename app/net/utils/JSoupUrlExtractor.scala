@@ -1,10 +1,19 @@
 package net.utils
 
+import javax.inject.Inject
+
+import dal.ScrapperStatisticDAO
+import data.scrapper.Scrapper
+import models.{Deal, ScrapperStatistic}
 import net.{Protocols, Url}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Element, Document}
 
-object JSoupUrlExtractor {
+import scala.concurrent.ExecutionContext
+
+
+case class JSoupUrlExtractor@Inject()(statisticDAO: ScrapperStatisticDAO)(implicit ec: ExecutionContext) {
+
   //TODO make async
   //TODO add some filtering to filter by html where <a href="href">html</a>
   def extractUrls(url: Url): Seq[Url] = {
@@ -19,10 +28,14 @@ object JSoupUrlExtractor {
         }
         }catch { case _ : Exception => Url("")}
       }
+      statisticDAO.create(url.toString,successful = true)
       elements.map(_.attr("href")).filter(UrlValidator.isValid).map(e => buildUrl(e, url))
+
     }
     catch {
-      case _: Exception => Seq.empty
+      case _: Exception => {
+        statisticDAO.create(url.toString,successful = false)
+        Seq.empty}
     }
   }
 

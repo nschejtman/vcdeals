@@ -66,8 +66,8 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
 
   //Render actions
 
-  def getFundHub = Action {
-    Ok(views.html.fund.hub(fundForm))
+  def getFundHub = Action { implicit request => { Ok(views.html.fund.hub(fundForm))}
+
   }
 
 }

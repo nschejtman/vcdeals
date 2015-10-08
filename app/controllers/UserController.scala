@@ -40,8 +40,8 @@ class UserController @Inject()(userDao: UserDAO)(implicit ec: ExecutionContext) 
   )
 
 
-  def getUserHub = Action {
-    Ok(views.html.user.hub.render())
+  def getUserHub = Action { implicit request => {  Ok(views.html.user.hub.render(request.session))}
+
   }
 
   def getList = Action.async {
@@ -72,7 +72,7 @@ class UserController @Inject()(userDao: UserDAO)(implicit ec: ExecutionContext) 
       },
       data => {
         data.users.foreach(user => userDao.create(user.username, user.password))
-        Ok(views.html.user.hub.render())
+        Ok(views.html.user.hub.render(request.session))
       }
     )
   }

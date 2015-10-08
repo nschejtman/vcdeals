@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import com.google.inject.Singleton
-import dal.{FundDAO, DealDAO}
+import dal.{ScrapperStatisticDAO, FundDAO, DealDAO}
 import data.scrapper.deal.DoubleIterationDealScrapper
 import models.{Fund, Deal}
 import net.utils.UrlValidator
@@ -15,7 +15,7 @@ import play.api.mvc.{Action, Controller}
 import scala.concurrent.{Future, ExecutionContext}
 
 @Singleton
-class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO)(implicit ec: ExecutionContext) extends Controller {
+class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: ScrapperStatisticDAO)(implicit ec: ExecutionContext) extends Controller {
   val dealForm = Form(
     mapping(
       "id" -> longNumber(),
@@ -40,8 +40,8 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO)(implicit ec: 
     )(Deals.apply)(Deals.unapply)
   )
 
-  def getDealHub = Action {
-    Ok(views.html.deal.hub.render())
+  def getDealHub = Action { implicit request => {Ok(views.html.deal.hub.render(request.session))}
+
   }
 
   def getList = Action.async {
@@ -63,20 +63,21 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO)(implicit ec: 
     )
   }
 
-  def updateAllFunds()=Action {
+  def updateAllFunds()=Action { implicit request => { val deals: Seq[Deal] = List()
+    val scraper = new DoubleIterationDealScrapper(statisticDAO)
+    fundDao.list().foreach(f =>  f.foreach(fund => try{scraper.getContent(fund.url).foreach(d => dealDao.create(d.name,d.url))}catch {case _: Exception =>}))
+
+    Ok(views.html.deal.hub.render(request.session))}
 
 
-    val deals: Seq[Deal] = List()
-    fundDao.list().foreach(f =>  f.foreach(fund => try{DoubleIterationDealScrapper.getContent(fund.url).foreach(d => dealDao.create(d.name,d.url))}))
 
-    Ok(views.html.deal.hub.render())
   }
 
   def postExtractUrl = Action { implicit request =>
     val urlStr: String = Form(single("url" -> text)).bindFromRequest().get
     UrlValidator.isValid(urlStr) match {
       case true =>
-        val deals: Seq[Deal] = DoubleIterationDealScrapper.getContent(urlStr)
+        val deals: Seq[Deal] =  new DoubleIterationDealScrapper(statisticDAO).getContent(urlStr)
         Ok(Json.toJson(deals))
       case false => BadRequest
     }
@@ -89,7 +90,7 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO)(implicit ec: 
       },
       data => {
         data.deals.foreach(deal => dealDao.create(deal.name, deal.url, deal.verified))
-        Ok(views.html.deal.hub.render())
+        Ok(views.html.deal.hub.render(request.session))
       }
     )
   }

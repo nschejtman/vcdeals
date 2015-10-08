@@ -36,7 +36,7 @@ class Auth extends Controller {
   }
 
   def logout = Action {
-    Redirect("").withNewSession.flashing(
+    Redirect(routes.Application.index()).withNewSession.flashing(
       "success" -> "You are now logged out."
     )
   }

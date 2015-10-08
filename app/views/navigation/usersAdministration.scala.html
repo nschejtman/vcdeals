@@ -1,6 +1,6 @@
 
 @import application.UserRoles.UserRoles
-@(login: Form[(String,String,UserRoles)])
+@(login: Form[(String,String,UserRoles)])(implicit session: play.api.mvc.Session)
 
 @import navigation.nav
 @import helper._

@@ -1,0 +1,90 @@
+@()(implicit session: play.api.mvc.Session)
+@import navigation.nav
+@css = {
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/deal_hub.css")">
+}
+
+@js = {
+    <script>
+        $(document).ready(updateStatistics);
+
+        function updateStatistics(){
+            $.get("/api/statistic/list").done(renderStatistics);
+        }
+
+        function renderStatistics(statistics){
+            var template = $('#template').html();
+            Mustache.parse(template);   // optional, speeds up future uses
+            var rendered = Mustache.render(template, {statistics: statistics});
+            $("#fund-table").find("tbody").html(rendered);
+        }
+
+        function search(){
+            var rows = $("#fund-table").find("tbody tr");
+            rows.hide();
+            var searchText = $("#search").val().toLowerCase();
+            rows.each(function(){
+                var $this = $(this);
+                var name = $this.find("td:first").text().toLowerCase();
+                var url = $this.find("td:nth-child(2)").text().toLowerCase();
+                if(name.indexOf(searchText) != -1 || url.indexOf(searchText) != -1){
+                   $this.show();
+                }
+            });
+        }
+
+           
+
+        $("#search").keyup(search);
+
+    </script>
+}
+
+@nav(css,js) {
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Statistics</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="deal-table">
+                        <thead>
+                            <tr>
+                                <th>Url</th>
+                                <th>Successful</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <script id="template" type="x-tmpl-mustache">
+                    {{#statistics}}
+                        <tr>
+                            <td>{{url}}</td>
+                            <td>{{successful}}</td>
+                        </tr>
+                    {{/statistics}}
+                </script>
+
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <input type="text" class="form-control" placeholder="Search..." id="search">
+                        <button class="btn btn-primary" onclick="search()" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+}
