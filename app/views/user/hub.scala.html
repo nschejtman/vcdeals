@@ -12,7 +12,7 @@
             $.get("/api/user/list").done(renderUsers);
         }
 
-        function renderUsers(user){
+        function renderUsers(users){
             var template = $('#template').html();
             Mustache.parse(template);   // optional, speeds up future uses
             var rendered = Mustache.render(template, {users: users});
@@ -38,7 +38,7 @@
                     <h3 class="panel-title">Users list</h3>
                 </div>
                 <div class="panel-body">
-                    <table class="table" id="deal-table">
+                    <table class="table" id="user-table">
                         <thead>
                             <tr>
                                 <th>Username</th>
@@ -51,7 +51,7 @@
                 <script id="template" type="x-tmpl-mustache">
                     {{#users}}
                         <tr>
-                            <td>{{name}}</td>
+                            <td>{{username}}</td>
                         </tr>
                     {{/users}}
                 </script>
@@ -102,6 +102,6 @@
                 <td><input type="text" name="user[{{i}}].username" value="{{user.username}}"></td>
                 <td><input type="text" name="user[{{i}}].password" value="{{user.passwordl}}"></td>
             </tr>
-        {{/deals}}
+        {{/users}}
     </script>
 }

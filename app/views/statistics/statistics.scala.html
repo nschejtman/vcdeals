@@ -10,13 +10,23 @@
 
         function updateStatistics(){
             $.get("/api/statistic/list").done(renderStatistics);
+            $.get("/api/statistic/count/all").done(renderCountAll);
+             $.get("/api/statistic/count/success").done(renderCountSuccess);
+        }
+
+        function renderCountAll(count){
+         $('#total').html(count);
+        }
+
+        function renderCountSuccess(count){
+         $('#success').html(count);
         }
 
         function renderStatistics(statistics){
             var template = $('#template').html();
             Mustache.parse(template);   // optional, speeds up future uses
             var rendered = Mustache.render(template, {statistics: statistics});
-            $("#fund-table").find("tbody").html(rendered);
+            $("#statistics-table").find("tbody").html(rendered);
         }
 
         function search(){
@@ -45,10 +55,11 @@
         <div class="col-md-8 col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Statistics</h3>
+                    <h3 class="panel-title">Statistics </h3>
+                    <h4 style="display : inline ;"><div id="success"></div>/<div id="total"></div></h4>
                 </div>
                 <div class="panel-body">
-                    <table class="table" id="deal-table">
+                    <table class="table" id="statistics-table">
                         <thead>
                             <tr>
                                 <th>Url</th>

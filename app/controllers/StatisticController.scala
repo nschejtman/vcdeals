@@ -39,6 +39,13 @@ class StatisticController @Inject()(statisticDAO: ScrapperStatisticDAO)(implicit
 
   }
 
+  def getCountSuccess = Action.async{
+    statisticDAO.list().map( statistics => Ok(Json.toJson(statistics.count(s => s.successful))))
+  }
+
+  def getCountAll = Action.async{
+    statisticDAO.list().map( statistics => Ok(Json.toJson(statistics.size)))
+  }
 
 
 }
