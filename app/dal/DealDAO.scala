@@ -29,11 +29,15 @@ class DealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
 
   private val deals = TableQuery[DealTable]
 
-  def create(name: String, url: String): Future[Deal] = db.run {
-    (deals.map(p => (p.name, p.url, p.verified))
-      returning deals.map(_.id)
-      into ((vars, id) => Deal(id, vars._1, vars._2, vars._3))
-      ) +=(name, url, false)
+  def create(name: String, url: String): Future[Deal] ={
+    if (find(name) != null) {db.run {
+
+      (deals.map(p => (p.name, p.url, p.verified))
+        returning deals.map(_.id)
+        into ((vars, id) => Deal(id, vars._1, vars._2, vars._3))
+        ) +=(name, url, false)
+    }} else return null
+
   }
 
   def create(name: String, url: String, verified : Boolean): Future[Deal] = db.run {
@@ -50,5 +54,10 @@ class DealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
   def find(id: Long) : Future[Deal] = db.run {
     deals.filter(_.id === id).result.head
   }
+
+  def find(Name : String) : Future[Deal] = db.run {
+    deals.filter(_.name === Name).result.head
+  }
+
 
 }

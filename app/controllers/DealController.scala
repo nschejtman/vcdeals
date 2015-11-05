@@ -94,5 +94,12 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: 
       }
     )
   }
+
+  /*def getCrunchBase = Action{ implicit request =>
+    dealDao.list().foreach( d => d.seq.foreach( deal =>  ))
+    Ok(views.html.deal.hub.render(request.session))
+  }
+
+  def searchCrunchBase(Name : String)=*/
 }
 

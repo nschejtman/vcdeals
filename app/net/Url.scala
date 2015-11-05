@@ -58,7 +58,7 @@ object Url {
    * @return url object
    */
   def apply(url: String): Url = {
-    if (UrlValidator.isValid(url)) {
+
       val validUrl: String = UrlValidator.validate(url)
       val idxOfPath: Int = validUrl.indexOf("/")
       val idxOfQuery: Int = validUrl.indexOf("?")
@@ -81,7 +81,7 @@ object Url {
       }
 
       Url(host, path, map)
-    } else throw new IllegalArgumentException("Not an url")
+
   }
 
   /**

@@ -8,11 +8,7 @@ object UrlReductionFilter extends LinkFilter{
    * @param url to test against filter
    * @return true if passes filter or false if should be filtered.
    */
-  override def filter(url: Url): Boolean = url.host match {
-    case "fb" => false
-    case "bit" => false
-    case "bitly" => false
-    case "linkd" => false
-    case _ => true
-  }
+  override def filter(url: Url): Boolean =  !(url.host.contains("fb") || url.host.contains("bit") || url.host.contains("bitly") || url.host.contains("linkd"))
+
+
 }

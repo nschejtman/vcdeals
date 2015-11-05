@@ -50,4 +50,8 @@ class FundDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
     funds.filter(_.id === id).result.head
   }
 
+  def find(Name : String) : Future[Fund] = db.run {
+    funds.filter(_.name === Name).result.head
+  }
+
 }
