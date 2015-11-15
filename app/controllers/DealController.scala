@@ -5,11 +5,15 @@ import javax.inject.Inject
 import com.google.inject.Singleton
 import dal.{ScrapperStatisticDAO, FundDAO, DealDAO}
 import data.scrapper.deal.DoubleIterationDealScrapper
+import data.scrapper.filter.{FundAsocFilter, SocialFilter}
 import models.{Fund, Deal}
-import net.utils.UrlValidator
+import net.{Protocols, Url}
+import net.utils.{JSoupUrlExtractor, UrlValidator}
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Element, Document}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -40,7 +44,9 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: 
     )(Deals.apply)(Deals.unapply)
   )
 
-  def getDealHub = Action { implicit request => {Ok(views.html.deal.hub.render(request.session))}
+  def getDealHub = Action { implicit request => {
+    Ok(views.html.deal.hub.render(request.session))
+  }
 
   }
 
@@ -63,12 +69,17 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: 
     )
   }
 
-  def updateAllFunds()=Action { implicit request => { val deals: Seq[Deal] = List()
+  def updateAllFunds() = Action { implicit request => {
+    val deals: Seq[Deal] = List()
     val scraper = new DoubleIterationDealScrapper(statisticDAO)
-    fundDao.list().foreach(f =>  f.foreach(fund => try{scraper.getContent(fund.url).foreach(d => dealDao.create(d.name,d.url))}catch {case _: Exception =>}))
+    fundDao.list().foreach(f => f.foreach(fund => try {
+      scraper.getContent(fund.url).foreach(d => dealDao.create(d.name, d.url))
+    } catch {
+      case _: Exception =>
+    }))
 
-    Ok(views.html.deal.hub.render(request.session))}
-
+    Ok(views.html.deal.hub.render(request.session))
+  }
 
 
   }
@@ -77,7 +88,7 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: 
     val urlStr: String = Form(single("url" -> text)).bindFromRequest().get
     UrlValidator.isValid(urlStr) match {
       case true =>
-        val deals: Seq[Deal] =  new DoubleIterationDealScrapper(statisticDAO).getContent(urlStr)
+        val deals: Seq[Deal] = new DoubleIterationDealScrapper(statisticDAO).getContent(urlStr)
         Ok(Json.toJson(deals))
       case false => BadRequest
     }
@@ -95,11 +106,35 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: 
     )
   }
 
-  /*def getCrunchBase = Action{ implicit request =>
-    dealDao.list().foreach( d => d.seq.foreach( deal =>  ))
+  def getCrunchBase = Action { implicit request =>
+    dealDao.list().foreach(d => d.seq.foreach{
+      deal =>
+
+
+
+        dealDao.updateNameById(deal.id,searchCrunchBase(deal.name))
+
+    })
     Ok(views.html.deal.hub.render(request.session))
   }
 
-  def searchCrunchBase(Name : String)=*/
+  def searchCrunchBase(Name: String): Boolean = {
+    try {
+      val url = "https://api.crunchbase.com/v/3/organizations?name=" + Name + "&user_key=0916cd0764ac298d65304c70ee2b6873"
+
+      val response = Jsoup.connect(url).ignoreContentType(true).execute().body();
+      val json: JsValue = Json.parse(response)
+      System.out.println(json);
+      var cant = (json \ "data" \ "paging" \ "total_items").as[Int]
+      System.out.println(cant);
+      return cant > 0
+    }
+    catch {
+      case _: Exception => {
+        false
+      }
+
+    }
+  }
 }
 

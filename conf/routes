@@ -31,6 +31,7 @@ GET         /api/deal/list                       controllers.DealController.getL
 POST        /api/deal/list                       controllers.DealController.postList()
 POST        /api/deal/extract/url                controllers.DealController.postExtractUrl()
 GET         /api/deal/updateFunds                controllers.DealController.updateAllFunds()
+GET        /api/deal/getCrunchBase              controllers.DealController.getCrunchBase()
 
 #Authentication
 GET         /api/login                           controllers.Auth.login()
