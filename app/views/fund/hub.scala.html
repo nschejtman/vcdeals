@@ -5,45 +5,7 @@
 }
 
 @js = {
-    <script>
-        $(document).ready(updateFunds);
-
-        function updateFunds(){
-            $.get("/api/fund/list").done(renderFunds);
-        }
-
-        function renderFunds(funds){
-            var template = $('#template').html();
-            Mustache.parse(template);   // optional, speeds up future uses
-            var rendered = Mustache.render(template, {funds: funds});
-            $("#fund-table").find("tbody").html(rendered);
-        }
-
-        function search(){
-            var rows = $("#fund-table").find("tbody tr");
-            rows.hide();
-            var searchText = $("#search").val().toLowerCase();
-            rows.each(function(){
-                var $this = $(this);
-                var name = $this.find("td:first").text().toLowerCase();
-                var url = $this.find("td:nth-child(2)").text().toLowerCase();
-                if(name.indexOf(searchText) != -1 || url.indexOf(searchText) != -1){
-                   $this.show();
-                }
-            });
-        }
-
-        function updateLavca(){
-            $.get("/api/fund/lavca").done(renderFunds);
-        }
-
-        function updateEmpea(){
-            $.get("/api/fund/empea").done(renderFunds);
-        }
-
-        $("#search").keyup(search);
-
-    </script>
+    <script src="@routes.Assets.at("javascripts/fund-hub.js")" rel="script"></script>
 }
 
 @nav(css, js) {
@@ -95,7 +57,7 @@
                     <h3 class="panel-title">Create manually</h3>
                 </div>
                 <div class="panel-body">
-                    @helper.form(routes.FundController.post()) {
+                    @helper.form(action = routes.FundController.post, 'id -> "createFundForm") {
                             <!--suppress HtmlFormInputWithoutLabel -->
                         <input type="number" style="display : none" name="id" value="-1" class="form-control">
                         <div class="form-group">
@@ -111,7 +73,7 @@
                             <input type="checkbox" name="verified" value="true">
                             <label for="verified">Verified</label>
                         </div>
-                        <button type="submit" class="btn btn-primary pull-right">
+                        <button type="button" onclick="hub.createFund()" class="btn btn-primary pull-right">
                             Create fund
                         </button>
                     }
