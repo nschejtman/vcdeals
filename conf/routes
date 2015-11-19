@@ -4,48 +4,49 @@
 
 
 # Home page
-GET         /                                    controllers.Application.index()
-GET         /fund/hub                            controllers.FundController.getFundHub()
-GET         /deal/hub                            controllers.DealController.getDealHub()
-GET         /user/hub                            controllers.UserController.getUserHub()
-GET         /statistic/hub                       controllers.StatisticController.getStatisticHub()
+GET         /                                   controllers.Application.index()
+GET         /fund/hub                           controllers.FundController.getFundHub()
+GET         /deal/hub                           controllers.DealController.getDealHub()
+GET         /user/hub                           controllers.UserController.getUserHub()
+GET         /statistic/hub                      controllers.StatisticController.getStatisticHub()
 
 # Statistic API
-GET         /api/statistic/list                  controllers.StatisticController.getList()
+GET         /api/statistic/list                 controllers.StatisticController.getList()
 GET         /api/statistic/count/success        controllers.StatisticController.getCountSuccess()
 GET         /api/statistic/count/all            controllers.StatisticController.getCountAll()
 
 # Funds API
-POST        /api/fund                            controllers.FundController.post()
+POST        /api/fund                           controllers.FundController.post()
+PUT         /api/fund                           controllers.FundController.put()
 #GET         /api/fund/:id         read
 #PUT         /api/fund/:id         update
 #DELETE      /api/fund/:id         delete
-GET         /api/fund/list                       controllers.FundController.getList()
-GET         /api/fund/lavca                      controllers.FundController.updateLavca()
-GET         /api/fund/empea                      controllers.FundController.updateEmpea()
+GET         /api/fund/list                      controllers.FundController.getList()
+GET         /api/fund/lavca                     controllers.FundController.updateLavca()
+GET         /api/fund/empea                     controllers.FundController.updateEmpea()
 
 
 #Deals API
-POST        /api/deal                            controllers.DealController.post()
-GET         /api/deal/list                       controllers.DealController.getList()
-POST        /api/deal/list                       controllers.DealController.postList()
-POST        /api/deal/extract/url                controllers.DealController.postExtractUrl()
-GET         /api/deal/updateFunds                controllers.DealController.updateAllFunds()
-GET        /api/deal/getCrunchBase              controllers.DealController.getCrunchBase()
+POST        /api/deal                           controllers.DealController.post()
+GET         /api/deal/list                      controllers.DealController.getList()
+POST        /api/deal/list                      controllers.DealController.postList()
+POST        /api/deal/extract/url               controllers.DealController.postExtractUrl()
+GET         /api/deal/updateFunds               controllers.DealController.updateAllFunds()
+GET         /api/deal/getCrunchBase             controllers.DealController.getCrunchBase()
 
 #Authentication
-GET         /api/login                           controllers.Auth.login()
-GET         /api/logout                          controllers.Auth.logout()
-POST        /api/auth                            controllers.Auth.authenticate()
+GET         /api/login                          controllers.Auth.login()
+GET         /api/logout                         controllers.Auth.logout()
+POST        /api/auth                           controllers.Auth.authenticate()
 
 
 #Users
-POST        /api/user                            controllers.UserController.post()
+POST        /api/user                           controllers.UserController.post()
 #GET         /api/user/:id         read
 #PUT         /api/user/:id         update
 #DELETE      /api/user/:id         delete
-GET         /api/user/list                       controllers.UserController.getList()
+GET         /api/user/list                      controllers.UserController.getList()
 
 #Assets
-GET         /assets/*file                        controllers.Assets.at(path="/public", file : String)
+GET         /assets/*file                       controllers.Assets.at(path="/public", file : String)
 

@@ -46,6 +46,20 @@ class FundController @Inject()(fundDao: FundDAO)(implicit ec: ExecutionContext) 
     )
   }
 
+  def put = Action.async { implicit request =>
+    fundForm.bindFromRequest().fold(
+        errorForm => {
+          errorForm.errors.foreach(p => System.out.println(p.toString))
+          Future.successful(Redirect(routes.Application.index()))
+      },
+      fund => {
+        System.out.println(fund.toString)
+        fundDao.update(fund.id, fund.name, fund.url, fund.verified)
+        Future.successful(Redirect(routes.FundController.getFundHub()))
+      }
+    )
+  }
+
   //noinspection SpellCheckingInspection
   def updateLavca() = Action.async {
     val scrapper: LAVCAScrapper = new LAVCAScrapper(fundDao)
