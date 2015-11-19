@@ -70,6 +70,19 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,
     )
   }
 
+  def put = Action.async { implicit request =>
+    dealForm.bindFromRequest().fold(
+      errorForm => {
+        Future.successful(Redirect(routes.Application.index()))
+      },
+      deal => {
+        dealDao.update(deal.id, deal.name, deal.url, deal.verified)
+        Future.successful(Redirect(routes.DealController.getDealHub()))
+      }
+    )
+  }
+
+
   def updateAllFunds() = Action { implicit request => {
     val deals: Seq[Deal] = List()
     val scraper = new DoubleIterationDealScrapper(statisticDAO)

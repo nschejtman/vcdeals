@@ -5,76 +5,7 @@
 }
 
 @js = {
-    <script>
-        $(document).ready(updateDeals);
-
-        function updateDeals(){
-            $.get("/api/deal/list").done(renderDeals);
-        }
-
-        function renderDeals(deals){
-            var template = $('#template').html();
-            Mustache.parse(template);   // optional, speeds up future uses
-            var rendered = Mustache.render(template, {deals: deals});
-            $("#deal-table").find("tbody").html(rendered);
-        }
-
-        function search(){
-            var rows = $("#deal-table").find("tbody tr");
-            rows.hide();
-            var searchText = $("#search").val().toLowerCase();
-            rows.each(function(){
-                var $this = $(this);
-                var name = $this.find("td:first").text().toLowerCase();
-                var url = $this.find("td:nth-child(2)").text().toLowerCase();
-                if(name.indexOf(searchText) != -1 || url.indexOf(searchText) != -1){
-                   $this.show();
-                }
-            });
-        }
-
-        var $modal = $("#url-extraction-modal");
-        var $modalLoader = $modal.find(".loader");
-        var $modalTable = $("#deal-extraction-table");
-
-        function extractFromUrl(){
-            $modal.modal().toggle(true);
-            $modalLoader.toggleClass("hidden", false);
-            $modalTable.toggleClass("hidden", true);
-            var $input = $("#extraction-url");
-            $.ajax({
-                url: "/api/deal/extract/url",
-                method: "POST",
-                data: {url : $input.val()},
-                timeout: 900000
-            }).done(renderUrlExtractionResults);
-        }
-
-        var extractedDeals;
-
-        function renderUrlExtractionResults(deals){
-            $modalLoader.toggleClass("hidden", true);
-            $modalTable.toggleClass("hidden", false);
-
-            extractedDeals = deals;
-            var auxArray = [];
-            for (idx in deals) auxArray.push({'i': idx, 'deal':deals[idx]});
-
-            //Mustache!
-            var template = $('#editable-template').html();
-            Mustache.parse(template);   // optional, speeds up future uses
-            var rendered = Mustache.render(template, {deals: auxArray});
-
-            $modalTable.find("tbody").html(rendered);
-        }
-
-        function saveExtractionResults(){
-            $("#deal-list-form").submit();
-        }
-
-        $("#search").keyup(search);
-
-    </script>
+    <script src="@routes.Assets.at("javascripts/deal-hub.js")" rel="script"></script>
 }
 
 @nav(css, js) {
@@ -103,6 +34,7 @@
                             <td>{{name}}</td>
                             <td>{{url}}</td>
                             <td>{{verified}}</td>
+                                            <td><button type="button" class="btn btn-default" onclick="hub.toggleUpdateModal({id : {{id}}, name: '{{name}}', url: '{{url}}', verified: {{verified}} })">Edit</button></td>
                         </tr>
                     {{/deals}}
                 </script>
@@ -207,4 +139,36 @@
             </tr>
         {{/deals}}
     </script>
+    <div class="modal fade" id="updateDealModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Edit</h4>
+                </div>
+                <div class="modal-body">
+                    <script id="update-template" type="x-tmpl-mustache">
+                        <input type="number" style="display : none" name="id" value="{{id}}" class="form-control">
+                        <div class="form-group">
+                            <label for="name">Fund name</label>
+                            <input type="text" name="name" placeholder="Name" class="form-control" value="{{name}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="url">Fund URL</label>
+                            <input type="text" name="url" placeholder="URL" class="form-control" value="{{url}}">
+                        </div>
+                        <div class="form-group">
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                            <input type="checkbox" name="verified" value="true">
+                            <label for="verified">Verified</label>
+                        </div>
+                        </script>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="hub.updateDeal()">Accept</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }

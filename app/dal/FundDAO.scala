@@ -6,6 +6,7 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 
 import scala.concurrent.{Future, ExecutionContext}
+import scala.util.{Failure, Success}
 
 @Singleton
 class FundDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
@@ -35,7 +36,7 @@ class FundDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
       ) +=(name, url, false)
   }
 
-  def create(name: String, url: String, verified : Boolean): Future[Fund] = db.run {
+  def create(name: String, url: String, verified: Boolean): Future[Fund] = db.run {
     (funds.map(p => (p.name, p.url, p.verified))
       returning funds.map(_.id)
       into ((vars, id) => Fund(id, vars._1, vars._2, vars._3))
@@ -46,11 +47,16 @@ class FundDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
     funds.result
   }
 
-  def find(id: Long) : Future[Fund] = db.run {
+  def update(id: Long, name: String, url: String, verified: Boolean) = db.run {
+    val q = for {l <- funds if l.id === id} yield (l.name, l.url, l.verified)
+    q.update(name, url, verified)
+  }
+
+  def find(id: Long): Future[Fund] = db.run {
     funds.filter(_.id === id).result.head
   }
 
-  def find(Name : String) : Future[Fund] = db.run {
+  def find(Name: String): Future[Fund] = db.run {
     funds.filter(_.name === Name).result.head
   }
 

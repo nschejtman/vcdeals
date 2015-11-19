@@ -54,6 +54,11 @@ class DealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
     q.update(verified)
   }
 
+  def update(id: Long, name: String, url: String, verified: Boolean) = db.run {
+    val q = for {l <- deals if l.id === id} yield (l.name, l.url, l.verified)
+    q.update(name, url, verified)
+  }
+
   def create(name: String, url: String, verified : Boolean): Future[Deal] = db.run {
     (deals.map(p => (p.name, p.url, p.verified))
       returning deals.map(_.id)
