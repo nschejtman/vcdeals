@@ -9,6 +9,7 @@ GET         /fund/hub                            controllers.FundController.getF
 GET         /deal/hub                            controllers.DealController.getDealHub()
 GET         /user/hub                            controllers.UserController.getUserHub()
 GET         /statistic/hub                       controllers.StatisticController.getStatisticHub()
+GET         /fundDeal/hub                        controllers.FundDealController.getFundDealHub()
 
 # Statistic API
 GET         /api/statistic/list                  controllers.StatisticController.getList()
@@ -49,3 +50,5 @@ GET         /api/user/list                       controllers.UserController.getL
 #Assets
 GET         /assets/*file                        controllers.Assets.at(path="/public", file : String)
 
+# Fund Deal API
+GET         /api/fundDeal/list                  controllers.FundDealController.getList()

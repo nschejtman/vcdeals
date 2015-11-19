@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import com.google.inject.Singleton
-import dal.{ScrapperStatisticDAO, FundDAO, DealDAO}
+import dal.{FundDealDAO, ScrapperStatisticDAO, FundDAO, DealDAO}
 import data.scrapper.deal.DoubleIterationDealScrapper
 import data.scrapper.filter.{FundAsocFilter, SocialFilter}
 import models.{Fund, Deal}
@@ -19,7 +19,8 @@ import play.api.mvc.{Action, Controller}
 import scala.concurrent.{Future, ExecutionContext}
 
 @Singleton
-class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: ScrapperStatisticDAO)(implicit ec: ExecutionContext) extends Controller {
+class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,
+                               fundDealDAO: FundDealDAO, statisticDAO: ScrapperStatisticDAO)(implicit ec: ExecutionContext) extends Controller {
   val dealForm = Form(
     mapping(
       "id" -> longNumber(),
@@ -72,16 +73,24 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,statisticDAO: 
   def updateAllFunds() = Action { implicit request => {
     val deals: Seq[Deal] = List()
     val scraper = new DoubleIterationDealScrapper(statisticDAO)
-    fundDao.list().foreach(f => f.foreach(fund => try {
-      scraper.getContent(fund.url).foreach(d => dealDao.create(d.name, d.url))
+    fundDao.list().foreach(funds => funds.foreach(fund =>
+      try {
+        val scraperDeals: Seq[Deal] = scraper.getContent(fund.url)
+        scraperDeals.foreach( d => createDeal(fund,d))
+        //scraperDeals.foreach(d => createDeal(fund, dealDao.create(d.name, d.url)))
+        /*        scraperDeals.foreach(d => dealDao.create(d.name, d.url))
+        scraperDeals.foreach(d => fundDealDAO.create(fund.id, d.id))*/
     } catch {
       case _: Exception =>
     }))
 
     Ok(views.html.deal.hub.render(request.session))
-  }
+  }}
 
-
+  def createDeal(f: Fund, d: Deal) = {
+    dealDao.create(d.name, d.url).foreach( deal =>
+      fundDealDAO.create(f.id, deal.id)
+    )
   }
 
   def postExtractUrl = Action { implicit request =>

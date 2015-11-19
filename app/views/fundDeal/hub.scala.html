@@ -1,0 +1,103 @@
+@()(implicit session: play.api.mvc.Session)
+@import navigation.nav
+@css = {
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/deal_hub.css")">
+}
+
+@js = {
+    <script>
+        $(document).ready(updateFundDealRelations);
+
+        function updateFundDealRelations(){
+            $.get("/api/fundDeal/list").done(renderFundDealRelations);
+        }
+
+        function renderFundDealRelations(fundDealRelations){
+            var template = $('#template').html();
+            Mustache.parse(template);   // optional, speeds up future uses
+            var rendered = Mustache.render(template, {fundDealRelations: fundDealRelations});
+            $("#fundDealRelation-table").find("tbody").html(rendered);
+        }
+
+
+        function search(){
+            var rows = $("fundDealRelation-table").find("tbody tr");
+            rows.hide();
+            var searchText = $("#search").val().toLowerCase();
+            rows.each(function(){
+                var $this = $(this);
+                var deal = $this.find("td:first").text().toLowerCase();
+                var fund = $this.find("td:nth-child(2)").text().toLowerCase();
+                if(fund.indexOf(searchText) != -1 || deal.indexOf(searchText) != -1){
+                   $this.show();
+                }
+            });
+        }
+
+        var $modal = $("#url-extraction-modal");
+        var $modalLoader = $modal.find(".loader");
+        var $modalTable = $("#fundDealRelation-extraction-table");
+
+
+        $("#search").keyup(search);
+
+    </script>
+}
+
+@nav(css, js) {
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Fund Deals Connection</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="fundDealRelation-table">
+                        <thead>
+                            <tr>
+                                <th>Fund</th>
+                                <th>Deal</th>
+                                <th>Verified</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <script id="template" type="x-tmpl-mustache">
+                    {{#fundDealRelations}}
+                        <tr>
+                            <td>{{fund}}</td>
+                            <td>{{deal}}</td>
+                            <td>{{verified}}</td>
+                        </tr>
+                    {{/fundDealRelations}}
+                </script>
+
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <input type="text" class="form-control" placeholder="Search..." id="search">
+                        <button class="btn btn-primary" onclick="search()" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="editable-template" type="x-tmpl-mustache">
+        {{#users}}
+            <tr>
+                <td class="hidden"><input type="number" name="user[{{i}}].id" value="{{user.id}}"></td>
+                <td><input type="text" name="user[{{i}}].username" value="{{user.username}}"></td>
+                <td><input type="text" name="user[{{i}}].password" value="{{user.passwordl}}"></td>
+            </tr>
+        {{/users}}
+    </script>
+}
