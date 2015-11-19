@@ -28,6 +28,7 @@ GET         /api/fund/empea                     controllers.FundController.updat
 
 #Deals API
 POST        /api/deal                           controllers.DealController.post()
+PUT         /api/deal                           controllers.DealController.put()
 GET         /api/deal/list                      controllers.DealController.getList()
 POST        /api/deal/list                      controllers.DealController.postList()
 POST        /api/deal/extract/url               controllers.DealController.postExtractUrl()
