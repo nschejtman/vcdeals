@@ -5,6 +5,8 @@ var hub = (function(){
 
     function toggleUpdateModal(deal){
         $updateDealModalBody.html(Mustache.render($updateTemplate.html(), deal));
+        if(deal.verified) $updateDealModalBody.find('input[type=checkbox]').prop('checked', true);
+        else $updateDealModalBody.find('input[type=checkbox]').prop('checked', false);
         $updateDealModal.modal('toggle');
     }
 

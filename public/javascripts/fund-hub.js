@@ -5,10 +5,6 @@ var hub = (function(){
 
     var $updateFundModal = $('#updateFundModal');
     var $updateFundModalBody = $updateFundModal.find('.modal-body');
-    var $updateFundId = $($updateFundModalBody.find('input')[0]);
-    var $updateFundName = $($updateFundModalBody.find('input')[1]);
-    var $updateFundUrl = $($updateFundModalBody.find('input')[2]);
-    var $updateFundVerified = $($updateFundModalBody.find('input')[3]);
     var $updateTemplate = $('#update-template');
 
 
@@ -22,6 +18,8 @@ var hub = (function(){
 
     function toggleUpdateModal(fund){
         $updateFundModalBody.html(Mustache.render($updateTemplate.html(), fund));
+        if(fund.verified) $updateFundModalBody.find('input[type=checkbox]').prop('checked', true);
+        else $updateFundModalBody.find('input[type=checkbox]').prop('checked', false);
         $updateFundModal.modal('toggle');
     }
 
