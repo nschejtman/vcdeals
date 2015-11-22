@@ -41,6 +41,55 @@
 
         $("#search").keyup(search);
 
+var hub = (function(){
+    var $createfundDealForm = $('#createfundDealForm');
+    var $newfundDealName = $($createfundDealForm.find('input')[1]);
+    var $newfundDealUrl = $($createfundDealForm.find('input')[2]);
+
+    var $updatefundDealModal = $('#updatefundDealModal');
+    var $updatefundDealModalBody = $updatefundDealModal.find('.modal-body');
+    var $updateTemplate = $('#update-template');
+
+
+    function createfundDeal(){
+        if($newfundDealName.val() == '' || $newfundDealUrl.val() == ''){
+            alert('Some fields are incomplete!');
+        } else {
+            $createfundDealForm.submit();
+        }
+    }
+
+    function toggleUpdateModal(fundDeal){
+
+        $updatefundDealModalBody.html(Mustache.render($updateTemplate.html(), fundDeal));
+        if(fundDeal.verified) $updatefundDealModalBody.find('input[type=checkbox]').prop('checked', true);
+        else $updatefundDealModalBody.find('input[type=checkbox]').prop('checked', false);
+        $updatefundDealModal.modal('toggle');
+    }
+
+    function updatefundDeal(){
+        var data = {
+            id: $($updatefundDealModalBody.find('input')[0]).val(),
+            name: $($updatefundDealModalBody.find('input')[1]).val(),
+            url: $($updatefundDealModalBody.find('input')[2]).val(),
+            verified: $($updatefundDealModalBody.find('input')[3]).is(':checked')
+        };
+        $.ajax({
+            url: '/api/fundDeal',
+            method: 'put',
+            data: data
+        }).success(location.reload());
+    }
+
+    return {
+        createfundDeal : createfundDeal,
+        updatefundDeal : updatefundDeal,
+        toggleUpdateModal : toggleUpdateModal
+    }
+})();
+
+
+
     </script>
 }
 
@@ -70,6 +119,7 @@
                             <td>{{fund}}</td>
                             <td>{{deal}}</td>
                             <td>{{verified}}</td>
+                            <td><button type="button" class="btn btn-default" onclick="hub.toggleUpdateModal({id : {{id}},details : '{{details}}', verified: {{verified}} })">Details</button></td>
                         </tr>
                     {{/fundDealRelations}}
                 </script>
@@ -91,13 +141,36 @@
         </div>
     </div>
 
-    <script id="editable-template" type="x-tmpl-mustache">
-        {{#users}}
-            <tr>
-                <td class="hidden"><input type="number" name="user[{{i}}].id" value="{{user.id}}"></td>
-                <td><input type="text" name="user[{{i}}].username" value="{{user.username}}"></td>
-                <td><input type="text" name="user[{{i}}].password" value="{{user.passwordl}}"></td>
-            </tr>
-        {{/users}}
-    </script>
+    <div class="modal fade" id="updatefundDealModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Edit</h4>
+                </div>
+                <div class="modal-body">
+                    <script id="update-template" type="x-tmpl-mustache">
+                        <input type="number" style="display : none" name="id" value="{{id}}" class="form-control">
+
+
+                        <div class="form-group">
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                            <input type="checkbox" name="verified" value="true">
+                            <label for="verified">Verified</label>
+                        </div>
+                         <div class="form-group">
+                            <label for="name">Details</label>
+                            <input type="text" name="details" placeholder="Details" class="form-control" value="{{details}}">
+                        </div>
+                        </script>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="hub.updatefundDeal()">Accept</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
 }

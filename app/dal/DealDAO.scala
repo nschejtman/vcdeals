@@ -49,9 +49,17 @@ class DealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
     }
   }*/
 
-  def updateNameById(Id: Long, verified : Boolean) = db.run{
-    val q = for {l <- deals if l.id === Id} yield l.verified
-    q.update(verified)
+  def updateNameById(Id: Long, verified : Boolean) = {
+    if(verified){
+      db.run{
+        val q = for {l <- deals if l.id === Id} yield l.verified
+
+        q.update(verified)
+
+
+      }
+    }
+
   }
 
   def update(id: Long, name: String, url: String, verified: Boolean) = db.run {

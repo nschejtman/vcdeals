@@ -21,13 +21,14 @@ class FundDealController @Inject()(fundDealDAO: FundDealDAO, fundDAO: FundDAO, d
       "id" -> longNumber(),
       "fundId" -> longNumber(),
       "dealId" -> longNumber(),
-      "verified" -> boolean
+      "verified" -> boolean,
+      "details" -> text()
     )(FundDealRelation.apply)(FundDealRelation.unapply)
   )
 
   //API actions
 
-  case class NiceFundDeal(fund: String, deal: String, verified: Boolean)
+  case class NiceFundDeal(id : Long,fund: String, deal: String, verified: Boolean,details : String)
 
   implicit val niceFundDealFormat = Json.format[NiceFundDeal]
 
@@ -41,7 +42,7 @@ class FundDealController @Inject()(fundDealDAO: FundDealDAO, fundDAO: FundDAO, d
         for {
           fund <- futureFund
           deal <- futureDeal
-        } yield NiceFundDeal(fund.name, deal.name, fundDeal.verified)
+        } yield NiceFundDeal(fundDeal.id,fund.name, deal.name, fundDeal.verified,fundDeal.details)
       })
     ).map {fundDeals =>
       Ok(Json.toJson(fundDeals))
@@ -54,30 +55,46 @@ class FundDealController @Inject()(fundDealDAO: FundDealDAO, fundDAO: FundDAO, d
         Future.successful(Redirect(routes.Application.index()))
       },
       fundDealRelation => {
-        fundDealDAO.create(fundDealRelation.fundId, fundDealRelation.dealId).map { _ =>
+        fundDealDAO.create(fundDealRelation.fundId, fundDealRelation.dealId,fundDealRelation.details).map { _ =>
           Redirect(routes.FundDealController.getFundDealHub())
         }
       }
     )
   }
-/*
-  //noinspection SpellCheckingInspection
-  def updateLavca() = Action.async {
-    val scrapper: LAVCAScrapper = new LAVCAScrapper(fundDao)
-    scrapper.run()
-    fundDao.list().map(funds =>
-      Ok(Json.toJson(funds))
+
+  def put = Action.async { implicit request =>
+    fundDealForm.bindFromRequest().fold(
+      errorForm => {
+        errorForm.errors.foreach(p => System.out.println(p.toString))
+        Future.successful(Redirect(routes.Application.index()))
+      },
+      fundDeal => {
+        System.out.println(fundDeal.toString)
+        fundDealDAO.update(fundDeal.id,fundDeal.verified,fundDeal.details)
+        Future.successful(Redirect(routes.FundController.getFundHub()))
+      }
     )
   }
 
-  //noinspection SpellCheckingInspection
-  def updateEmpea() = Action.async {
-    val scrapper: EMPEAScrapper = new EMPEAScrapper(fundDao)
-    scrapper.run()
-    fundDao.list().map(funds =>
-      Ok(Json.toJson(funds))
-    )
-  }*/
+
+  /*
+    //noinspection SpellCheckingInspection
+    def updateLavca() = Action.async {
+      val scrapper: LAVCAScrapper = new LAVCAScrapper(fundDao)
+      scrapper.run()
+      fundDao.list().map(funds =>
+        Ok(Json.toJson(funds))
+      )
+    }
+
+    //noinspection SpellCheckingInspection
+    def updateEmpea() = Action.async {
+      val scrapper: EMPEAScrapper = new EMPEAScrapper(fundDao)
+      scrapper.run()
+      fundDao.list().map(funds =>
+        Ok(Json.toJson(funds))
+      )
+    }*/
 
   //Render actions
 

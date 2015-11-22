@@ -23,18 +23,31 @@ class FundDealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit e
 
     def verified = column[Boolean]("VERIFIED")
 
-    override def * = (id, fundId, dealId, verified) <>((FundDealRelation.apply _).tupled, FundDealRelation.unapply)
+    def details = column[String]("DETAILS")
+
+    override def * = (id, fundId, dealId, verified,details) <>((FundDealRelation.apply _).tupled, FundDealRelation.unapply)
   }
 
   private val fundDealRelations = TableQuery[FundDealTable]
 
-  def create(fundId: Long, dealId: Long): Future[FundDealRelation] = db.run {
-    (fundDealRelations.map(p => (p.fundId, p.dealId, p.verified))
-      returning fundDealRelations.map(_.id)
-      into ((vars, id) => FundDealRelation(id, vars._1, vars._2, vars._3))
-      ) +=(fundId, dealId, false)
-  }
+  def create(fundId: Long, dealId: Long,details : String): Future[FundDealRelation] = {
 
+  var existentRelation : FundDealRelation = null
+    findByFundDeal(fundId,dealId).onComplete(f => existentRelation = f.getOrElse(null))
+    if (existentRelation == null){
+
+
+    db.run {
+    System.out.println("details at dao : " + details);
+    (fundDealRelations.map(p => (p.fundId, p.dealId, p.verified,p. details))
+      returning fundDealRelations.map(_.id)
+      into ((vars, id) => FundDealRelation(id, vars._1, vars._2, vars._3,vars._4))
+      ) +=(fundId, dealId, false,details)
+  }}else{
+      update(existentRelation.id,existentRelation.verified,details)
+      Future{existentRelation}
+    }
+  }
 
   /*
     def create(fundId: String, dealId: String, verified : Boolean): Future[FundDealRelation] = db.run {
@@ -54,6 +67,15 @@ class FundDealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit e
 
   def findByFund(fundId : Long ) : Future[FundDealRelation] = db.run {
     fundDealRelations.filter(_.fundId === fundId).result.head
+  }
+
+  def findByFundDeal(fundId : Long,dealId : Long): Future[FundDealRelation] = db.run {
+    fundDealRelations.filter(_.fundId === fundId).filter(_.dealId === dealId).result.head
+  }
+
+  def update(id: Long, verified: Boolean,details : String) = db.run {
+    val q = for {l <- fundDealRelations if l.id === id} yield (l.details, l.verified)
+    q.update(details, verified)
   }
 
 }

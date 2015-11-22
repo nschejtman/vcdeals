@@ -3,7 +3,7 @@ package net.utils
 object UrlValidator {
   def isValid(url : String): Boolean = {
     val isvalid =url.matches("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]")
-    System.out.println(url + "  " + isvalid)
+
     return isvalid
   }
   //url.matches("/^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$/")

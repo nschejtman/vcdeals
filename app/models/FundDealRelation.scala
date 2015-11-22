@@ -2,7 +2,7 @@ package models
 
 import play.api.libs.json.Json
 
-case class FundDealRelation(id: Long, fundId : Long, dealId : Long, verified : Boolean){
+case class FundDealRelation(id: Long, fundId : Long, dealId : Long, verified : Boolean,details : String){
 
 }
 

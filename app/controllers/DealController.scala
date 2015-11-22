@@ -89,7 +89,7 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,
     fundDao.list().foreach(funds => funds.foreach(fund =>
       try {
         val scraperDeals: Seq[Deal] = scraper.getContent(fund.url)
-        scraperDeals.foreach( d => createDeal(fund,d))
+        scraperDeals.foreach( d => createDeal(fund,d,searchCrunchBase(d.name)))
         //scraperDeals.foreach(d => createDeal(fund, dealDao.create(d.name, d.url)))
         /*        scraperDeals.foreach(d => dealDao.create(d.name, d.url))
         scraperDeals.foreach(d => fundDealDAO.create(fund.id, d.id))*/
@@ -100,9 +100,9 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,
     Ok(views.html.deal.hub.render(request.session))
   }}
 
-  def createDeal(f: Fund, d: Deal) = {
+  def createDeal(f: Fund, d: Deal,details : String) = {
     dealDao.create(d.name, d.url).foreach( deal =>
-      fundDealDAO.create(f.id, deal.id)
+      fundDealDAO.create(f.id, deal.id,details)
     )
   }
 
@@ -134,26 +134,69 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,
 
 
 
-        dealDao.updateNameById(deal.id,searchCrunchBase(deal.name))
+        dealDao.updateNameById(deal.id,verifyCrunchBase(deal.name))
 
     })
     Ok(views.html.deal.hub.render(request.session))
   }
 
-  def searchCrunchBase(Name: String): Boolean = {
+  def verifyCrunchBase(Name: String): Boolean = {
     try {
       val url = "https://api.crunchbase.com/v/3/organizations?name=" + Name + "&user_key=0916cd0764ac298d65304c70ee2b6873"
 
       val response = Jsoup.connect(url).ignoreContentType(true).execute().body();
       val json: JsValue = Json.parse(response)
-      System.out.println(json);
-      var cant = (json \ "data" \ "paging" \ "total_items").as[Int]
-      System.out.println(cant);
+
+      val cant = (json \ "data" \ "paging" \ "total_items").as[Int]
+
       return cant > 0
     }
     catch {
       case _: Exception => {
         false
+      }
+
+    }
+  }
+
+  def searchCrunchBase(Name : String):String = {
+    try {
+      var details=""
+      var url = "https://api.crunchbase.com/v/3/organizations?name=" + Name + "&user_key=0916cd0764ac298d65304c70ee2b6873"
+
+      var response = Jsoup.connect(url).ignoreContentType(true).execute().body();
+      var json: JsValue = Json.parse(response)
+
+      var cant = (json \ "data" \ "paging" \ "total_items").as[Int]
+      if (cant == 1){
+        var permaLink = ((json \ "data" \ "items")(0) \ "properties" \ "permalink").as[String];
+       url = "https://api.crunchbase.com/v/3/organizations/" + permaLink + "?user_key=0916cd0764ac298d65304c70ee2b6873"
+
+       response = Jsoup.connect(url).ignoreContentType(true).execute().body()
+        json = Json.parse(response)
+        System.out.println( "cant = 1")
+        (json \\ "founders").foreach(j => details+=("founders" + j))
+        System.out.println( (json \\ "founders"))
+        (json \\ "founders").foreach(j => System.out.println("founders" + j))
+        System.out.println("details at controller : " + details);
+        (json \\ "investors").foreach(j => details+=("investors" + j))
+        System.out.println("details at controller : " + details);
+
+        (json \\ "funding_rounds").foreach(j => details+=("funding_rounds" + j))
+        System.out.println("details at controller : " + details);
+        (json \\ "investments").foreach(j => details+=("investments" + j))
+        System.out.println("details at controller : " + details);
+        (json \\ "ipo").foreach(j => details+=("ipo" + j))
+        System.out.println("details at controller : " + details);
+
+
+      }
+      System.out.println("details at controller : " + details);
+      return details
+    }
+    catch {
+      case _: Exception => {
+        ""
       }
 
     }
