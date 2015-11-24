@@ -6,7 +6,9 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import scala.concurrent.{Future, ExecutionContext}
 /**
- * Created by Tomas on 08/10/2015.
+ * Created by Tomas
+ * Date: 08/10/2015
+ * Project: vcdeals
  */
 @Singleton
 class ScrapperStatisticDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
@@ -17,8 +19,6 @@ class ScrapperStatisticDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(i
 
   private class StatisticTable(tag: Tag) extends Table[ScrapperStatistic](tag, "STATISTIC") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
-
-
 
     def url = column[String]("URL")
 

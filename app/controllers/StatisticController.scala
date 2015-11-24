@@ -1,23 +1,25 @@
 package controllers
 
 /**
- * Created by Tomas on 08/10/2015.
+ * Created by Tomas
+ * Date: 08/10/2015
+ * Project: vcdeals
  */
 import javax.inject.Inject
 
 import com.google.inject.Singleton
-import dal.{ScrapperStatisticDAO, FundDAO}
-import data.scrapper.fund.{EMPEAScrapper, LAVCAScrapper}
-import models.{ScrapperStatistic, Fund}
+import dal.{FundDAO, ScrapperStatisticDAO}
+import models.{Fund, ScrapperStatistic}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 @Singleton
-class StatisticController @Inject()(statisticDAO: ScrapperStatisticDAO)(implicit ec: ExecutionContext) extends Controller {
+class StatisticController @Inject()(statisticDAO: ScrapperStatisticDAO, fundDAO: FundDAO)
+                                   (implicit ec: ExecutionContext) extends Controller {
 
   val statisticForm = Form(
     mapping(
@@ -30,9 +32,27 @@ class StatisticController @Inject()(statisticDAO: ScrapperStatisticDAO)(implicit
   //API actions
 
   def getList = Action.async {
-    statisticDAO.list().map(statistics =>
-      Ok(Json.toJson(statistics))
-    )
+    val futureStatistics: Future[Seq[ScrapperStatistic]] = statisticDAO.list()
+    val futureFunds: Future[Seq[Fund]] = fundDAO.list()
+
+    val values = for {
+      statistics <- futureStatistics
+      funds <- futureFunds
+    } yield (statistics, funds)
+
+    values.map { case (statistics, funds) =>
+      val result = findStaticsForFunds(statistics, funds)
+      Ok(Json.toJson(result))
+    }
+  }
+
+  private def findStaticsForFunds(statistics: Seq[ScrapperStatistic], funds: Seq[Fund]) = funds
+    .filter(fund => statistics.exists(_.url.startsWith(fund.url)))
+    .map(findStaticsForFund(statistics))
+
+  private def findStaticsForFund(statistics: Seq[ScrapperStatistic])(fund: Fund) = {
+      val successful = statistics.filter(_.url.startsWith(fund.url)).forall(_.successful)
+      ScrapperStatistic(0, fund.url, successful)
   }
 
   def getStatisticHub = Action { implicit request => { Ok(views.html.statistics.statistics.render(request.session))}
@@ -46,6 +66,4 @@ class StatisticController @Inject()(statisticDAO: ScrapperStatisticDAO)(implicit
   def getCountAll = Action.async{
     statisticDAO.list().map( statistics => Ok(Json.toJson(statistics.size)))
   }
-
-
 }

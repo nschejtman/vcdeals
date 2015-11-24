@@ -10,3 +10,5 @@ project/.sbtserver
 /RUNNING_PID
 db
 *.db
+/out
+*.iml
