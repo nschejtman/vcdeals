@@ -174,24 +174,24 @@ class DealController @Inject()(dealDao: DealDAO,fundDao : FundDAO,
 
        response = Jsoup.connect(url).ignoreContentType(true).execute().body()
         json = Json.parse(response)
-        System.out.println( "cant = 1")
-        (json \\ "founders").foreach(j => details+=("founders" + j))
-        System.out.println( (json \\ "founders"))
-        (json \\ "founders").foreach(j => System.out.println("founders" + j))
-        System.out.println("details at controller : " + details);
-        (json \\ "investors").foreach(j => details+=("investors" + j))
-        System.out.println("details at controller : " + details);
 
-        (json \\ "funding_rounds").foreach(j => details+=("funding_rounds" + j))
-        System.out.println("details at controller : " + details);
-        (json \\ "investments").foreach(j => details+=("investments" + j))
-        System.out.println("details at controller : " + details);
-        (json \\ "ipo").foreach(j => details+=("ipo" + j))
-        System.out.println("details at controller : " + details);
+        (json \\ "founders").filter(f => (f \ "paging" \ "total_items").as[Int] > 0).foreach(j => (j \\ "items").foreach(i => details+=("Fundador= " + i )))
 
 
+
+        (json \\ "investors").filter(f => (f \ "paging" \ "total_items").as[Int] > 0).foreach(j => (j \\ "items").foreach(i => details+=("Inversor= " + i )))
+
+
+        (json \\ "funding_rounds").filter(f => (f \ "paging" \ "total_items").as[Int] > 0).foreach(j => (j \\ "items").foreach(i => details+=("Ronda de Inversion= " + i )))
+
+        (json \\ "investments").filter(f => (f \ "paging" \ "total_items").as[Int] > 0).foreach(j => (j \\ "items").foreach(i => details+=("Inversiones= " + i )))
+
+        (json \\ "ipo").filter(f => (f \ "paging" \ "total_items").as[Int] > 0).foreach(j => (j \\ "items").foreach(i => details+=("IPO= " + i )))
+
+      details = details.replace("\"","\\\"")
+        details = details.replace("'","\'")
       }
-      System.out.println("details at controller : " + details);
+
       return details
     }
     catch {

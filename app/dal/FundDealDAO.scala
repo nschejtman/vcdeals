@@ -38,7 +38,7 @@ class FundDealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit e
 
 
     db.run {
-    System.out.println("details at dao : " + details);
+
     (fundDealRelations.map(p => (p.fundId, p.dealId, p.verified,p. details))
       returning fundDealRelations.map(_.id)
       into ((vars, id) => FundDealRelation(id, vars._1, vars._2, vars._3,vars._4))

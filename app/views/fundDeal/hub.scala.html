@@ -119,7 +119,7 @@ var hub = (function(){
                             <td>{{fund}}</td>
                             <td>{{deal}}</td>
                             <td>{{verified}}</td>
-                            <td><button type="button" class="btn btn-default" onclick="hub.toggleUpdateModal({id : {{id}},details : '{{details}}', verified: {{verified}} })">Details</button></td>
+                            <td><button type="button" class="btn btn-default" onclick='hub.toggleUpdateModal({id : {{id}},details : "{{details}}", verified: {{verified}} })'>Details</button></td>
                         </tr>
                     {{/fundDealRelations}}
                 </script>
@@ -160,7 +160,7 @@ var hub = (function(){
                         </div>
                          <div class="form-group">
                             <label for="name">Details</label>
-                            <input type="text" name="details" placeholder="Details" class="form-control" value="{{details}}">
+                            <textarea name="details" placeholder="Details" class="form-control" >"{{details}}"</textarea>
                         </div>
                         </script>
                 </div>

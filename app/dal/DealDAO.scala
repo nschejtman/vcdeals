@@ -30,13 +30,22 @@ class DealDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: E
   private val deals = TableQuery[DealTable]
 
   def create(name: String, url: String): Future[Deal] ={
-    if (find(name) != null) {db.run {
+    var existentDeal: Deal= null;
+    find(name).onComplete(f => existentDeal = f.get)
+    System.out.println(name)
+    System.out.println(existentDeal)
+    if (existentDeal == null || existentDeal.id <= 0)
+
+    {db.run {
 
       (deals.map(p => (p.name, p.url, p.verified))
         returning deals.map(_.id)
         into ((vars, id) => Deal(id, vars._1, vars._2, vars._3))
         ) +=(name, url, false)
-    }} else return null
+    }} else {
+
+      return Future(existentDeal)
+    }
 
   }
 
